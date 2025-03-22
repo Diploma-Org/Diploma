@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRM", "CRM\WebApp.csproj", "{3568EE03-BA54-4EA7-9C0B-A5D1F5C74C59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic", "Core\BusinessLogic.csproj", "{941A50B3-8C16-47B1-A7C3-6BB08FD079CA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C6E5411-5081-42B2-9FD9-F4DF5B89D387} = {9C6E5411-5081-42B2-9FD9-F4DF5B89D387}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "Infrastructure\DataAccess.csproj", "{9C6E5411-5081-42B2-9FD9-F4DF5B89D387}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3568EE03-BA54-4EA7-9C0B-A5D1F5C74C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3568EE03-BA54-4EA7-9C0B-A5D1F5C74C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3568EE03-BA54-4EA7-9C0B-A5D1F5C74C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3568EE03-BA54-4EA7-9C0B-A5D1F5C74C59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
