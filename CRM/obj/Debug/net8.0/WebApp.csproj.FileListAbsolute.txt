@@ -331,3 +331,4 @@
 /home/ivan/Documents/Diploma/CRM/obj/Debug/net8.0/WebApp.pdb
 /home/ivan/Documents/Diploma/CRM/obj/Debug/net8.0/WebApp.genruntimeconfig.cache
 /home/ivan/Documents/Diploma/CRM/obj/Debug/net8.0/ref/WebApp.dll
+/home/ivan/Documents/Diploma/CRM/obj/Debug/net8.0/WebApp.sourcelink.json

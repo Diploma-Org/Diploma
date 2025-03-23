@@ -13,3 +13,4 @@
 /home/ivan/Documents/Diploma/Core/obj/Debug/net8.0/refint/BusinessLogic.dll
 /home/ivan/Documents/Diploma/Core/obj/Debug/net8.0/BusinessLogic.pdb
 /home/ivan/Documents/Diploma/Core/obj/Debug/net8.0/ref/BusinessLogic.dll
+/home/ivan/Documents/Diploma/Core/obj/Debug/net8.0/BusinessLogic.sourcelink.json

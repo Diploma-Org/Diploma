@@ -12,3 +12,4 @@
 /home/ivan/Documents/Diploma/Infrastructure/obj/Debug/net8.0/DataAccess.pdb
 /home/ivan/Documents/Diploma/Infrastructure/obj/Debug/net8.0/DataAccess.genruntimeconfig.cache
 /home/ivan/Documents/Diploma/Infrastructure/obj/Debug/net8.0/ref/DataAccess.dll
+/home/ivan/Documents/Diploma/Infrastructure/obj/Debug/net8.0/DataAccess.sourcelink.json
