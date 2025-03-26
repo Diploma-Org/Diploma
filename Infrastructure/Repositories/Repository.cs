@@ -16,7 +16,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
 
     public IEnumerable<TEntity> GetAll()
     {
-        return _dbSet.ToList();
+        return [.. _dbSet];
     }
 
     public TEntity? GetById(int id)

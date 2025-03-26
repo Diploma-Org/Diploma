@@ -10,4 +10,6 @@ public class Appoinment : IEntity
     public DateTime EndTime { get; set; }
     public int IdMaster { get; set; }
     public int IdProvidedService { get; set; }
+    public string? VisitorName { get; set; }
+    public string? VisitorPhone { get; set; }
 }

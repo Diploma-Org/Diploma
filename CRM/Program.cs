@@ -3,8 +3,6 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using DataAccess;
 using DataAccess.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +30,12 @@ builder.Services.AddRazorPages();
 //     .AddDefaultTokenProviders()
 //     .AddDefaultUI();
 
+
 builder.Services.AddRepository();
+
+builder.Services.AddScoped<IHomeService, HomeService>();
+
+builder.Services.AddValidators();
 
 var app = builder.Build();
 

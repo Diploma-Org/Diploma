@@ -1,21 +1,31 @@
 using System.Diagnostics;
-using DataAccess.Data;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
+using BusinessLogic.Interfaces;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly AppDbContext _context;
-    public HomeController(AppDbContext context)
+    private readonly IHomeService _homeService;
+    public HomeController(IHomeService homeService)
     {
-        _context = context;
+        _homeService = homeService;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var appoinmentAllData = _homeService.GetAppoinmentsAllData();
+        if (appoinmentAllData == null)
+            return NotFound();
+        
+        var model = new HomeIndexViewModel
+        {
+            Masters = _homeService.GetMasters(),
+            Appoinments = appoinmentAllData
+        };
+        return View(model);
     }
 
     public IActionResult Privacy()

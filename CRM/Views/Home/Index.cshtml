@@ -1,8 +1,59 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model  WebApp.ViewModels.HomeIndexViewModel;
+
+@{
+    ViewData["Title"] = "Расписание";
+    var startTime = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 10 : 9;
+    var endTime = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 16 : 19;
+    var timeSlots = Enumerable.Range(startTime, endTime - startTime + 1).Select(h => new { Time = $"{h}:00" });
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Time</th>
+                    @foreach (var master in Model.Masters)
+                    {
+                        <th>@master.Name</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                
+                @foreach (var timeSlot in timeSlots)
+                {
+                    <tr>
+                        <td class="bg-light">@timeSlot.Time</td>
+                        @foreach (var master in Model.Masters)
+                        {
+                            var appointment = Model.Appoinments.FirstOrDefault(a => a.StartTime.ToString("HH:mm") == timeSlot.Time && a.IdMaster == master.Id);
+                            <td class="@(appointment != null ? "bg-success text-white" : "")">
+                                @if (appointment != null)
+                                {
+                                    <div>@appointment.ServiceName</div>
+                                    <div><small>@appointment.VisitorName</small></div>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<style>
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+    .bg-success {
+        background-color: #4caf50 !important;
+    }
+    .bg-primary {
+        background-color: #3f51b5 !important;
+    }
+</style>
+
