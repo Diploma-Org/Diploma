@@ -7,7 +7,7 @@ public class Appoinment : IEntity
     [Column("IdAppointment")]
     public int Id { get; set; }
     public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
+    public int Duration { get; set; }
     public int IdMaster { get; set; }
     public int IdProvidedService { get; set; }
     public string? VisitorName { get; set; }

@@ -1,59 +1,97 @@
-﻿@model  WebApp.ViewModels.HomeIndexViewModel;
+﻿@model WebApp.ViewModels.HomeIndexViewModel;
 
 @{
     ViewData["Title"] = "Расписание";
     var startTime = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 10 : 9;
     var endTime = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 16 : 19;
-    var timeSlots = Enumerable.Range(startTime, endTime - startTime + 1).Select(h => new { Time = $"{h}:00" });
+    var slotInterval = 30; // Time slot interval in minutes
+    var slotHeight = 60; // Increased height for better spacing
+    var totalMinutes = (endTime - startTime) * 60;
+    var timeSlots = Enumerable.Range(0, totalMinutes / slotInterval + 1)
+        .Select(i => new { Time = $"{(startTime * 60 + i * slotInterval) / 60:D2}:{(i * slotInterval) % 60:D2}", Minutes = i * slotInterval });
 }
 
 <div class="container mt-4">
-    <div class="table-responsive">
-        <table class="table table-bordered text-center">
-            <thead class="bg-primary text-white">
-                <tr>
-                    <th>Time</th>
-                    @foreach (var master in Model.Masters)
-                    {
-                        <th>@master.Name</th>
-                    }
-                </tr>
-            </thead>
-
-            <tbody>
-                
+    <div class="row">
+        <div class="col-2">
+            <div class="time-column">
                 @foreach (var timeSlot in timeSlots)
                 {
-                    <tr>
-                        <td class="bg-light">@timeSlot.Time</td>
-                        @foreach (var master in Model.Masters)
-                        {
-                            var appointment = Model.Appoinments.FirstOrDefault(a => a.StartTime.ToString("HH:mm") == timeSlot.Time && a.IdMaster == master.Id);
-                            <td class="@(appointment != null ? "bg-success text-white" : "")">
-                                @if (appointment != null)
-                                {
-                                    <div>@appointment.ServiceName</div>
-                                    <div><small>@appointment.VisitorName</small></div>
-                                }
-                            </td>
-                        }
-                    </tr>
+                    <div class="time-slot">@timeSlot.Time</div>
                 }
-            </tbody>
-        </table>
+            </div>
+        </div>
+
+        <div class="col-10">
+            <div class="schedule-grid">
+                @foreach (var master in Model.Masters)
+                {
+                    <div class="master-column">
+                        <h5 class="text-center">@master.Name</h5>
+                        <div class="appointments">
+                            @foreach (var appointment in Model.Appoinments.Where(a => a.IdMaster == master.Id))
+                            {
+                                var startMinutes = appointment.StartTime.Hour * 60 + appointment.StartTime.Minute;
+                                var endMinutes = startMinutes + appointment.Duration;
+
+                                // Ensure it stays within bounds
+                                var relativeStart = Math.Max(0, startMinutes - (startTime * 60));
+                                var relativeEnd = Math.Min(totalMinutes, endMinutes - (startTime * 60));
+                                var duration = Math.Max(appointment.Duration, 30); // Ensure min height
+
+                                // Convert time to pixels
+                                var topPosition = relativeStart * slotHeight / slotInterval;
+                                var height = duration * slotHeight / slotInterval;
+
+                                <div class="appointment-card" style="top: @(topPosition)px; height: @(height)px;">
+                                    <strong>@appointment.ServiceName</strong>
+                                    <div><small>@appointment.VisitorName</small></div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    th, td {
-        padding: 15px;
-        text-align: center;
+    .time-column {
+        display: flex;
+        flex-direction: column;
     }
-    .bg-success {
-        background-color: #4caf50 !important;
+    .time-slot {
+        height: 60px; /* Increased spacing */
+        border-bottom: 1px solid #ddd;
+        text-align: right;
+        padding-right: 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
     }
-    .bg-primary {
-        background-color: #3f51b5 !important;
+    .schedule-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+    .master-column {
+        width: 200px;
+        border-left: 1px solid #ddd;
+        position: relative;
+    }
+    .appointments {
+        position: relative;
+        height: calc(100vh - 150px);
+    }
+    .appointment-card {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        background: #4caf50;
+        color: white;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 </style>
-

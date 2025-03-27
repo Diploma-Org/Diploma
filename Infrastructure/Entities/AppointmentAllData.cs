@@ -7,6 +7,7 @@ namespace DataAccess.Entities
         {
             Id = appoinment.Id;
             StartTime = appoinment.StartTime;
+            Duration = appoinment.Duration;
             IdMaster = appoinment.IdMaster;
             IdProvidedService = appoinment.IdProvidedService;
             VisitorName = appoinment.VisitorName;
