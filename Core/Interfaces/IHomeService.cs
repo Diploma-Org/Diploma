@@ -5,7 +5,7 @@ namespace BusinessLogic.Interfaces;
     {
         public IEnumerable<Appoinment> GetAppoinments();
         public IEnumerable<Master> GetMasters();
+        public IEnumerable<Master> GetCurrentMasters(IEnumerable<AppoinmentAllData> appoinmentAllData);
         public IEnumerable<ProvidedService> GetProvidedServices();
-        public AppoinmentAllData ToAppoinmentAllData(Appoinment appoinment, string ServiceName);
-        public IEnumerable<AppoinmentAllData>? GetAppoinmentsAllData();
+        public IEnumerable<AppoinmentAllData>? GetAppoinmentsByDate(DateTime date);
     }

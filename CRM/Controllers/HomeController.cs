@@ -14,19 +14,24 @@ public class HomeController : Controller
         _homeService = homeService;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(DateTime? date)
     {
-        var appoinmentAllData = _homeService.GetAppoinmentsAllData();
+        var selectedDate = date ?? DateTime.Today;
+
+        var appoinmentAllData = _homeService.GetAppoinmentsByDate(selectedDate);
         if (appoinmentAllData == null)
             return NotFound();
-        
+
         var model = new HomeIndexViewModel
         {
-            Masters = _homeService.GetMasters(),
-            Appoinments = appoinmentAllData
+            Masters = _homeService.GetCurrentMasters(appoinmentAllData),
+            Appointments = appoinmentAllData,
+            SelectedDate = selectedDate
         };
+
         return View(model);
     }
+
 
     public IActionResult Privacy()
     {

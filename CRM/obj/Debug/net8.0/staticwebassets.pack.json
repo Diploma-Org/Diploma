@@ -5,12 +5,20 @@
       "PackagePath": "staticwebassets/WebApp.bundle.scp.css"
     },
     {
+      "Id": "/home/ivan/Documents/Diploma/CRM/wwwroot/css/HomeIndex.css",
+      "PackagePath": "staticwebassets/css/HomeIndex.css"
+    },
+    {
       "Id": "/home/ivan/Documents/Diploma/CRM/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
     {
       "Id": "/home/ivan/Documents/Diploma/CRM/wwwroot/favicon.ico",
       "PackagePath": "staticwebassets/favicon.ico"
+    },
+    {
+      "Id": "/home/ivan/Documents/Diploma/CRM/wwwroot/js/HomeIndex.js",
+      "PackagePath": "staticwebassets/js/HomeIndex.js"
     },
     {
       "Id": "/home/ivan/Documents/Diploma/CRM/wwwroot/js/site.js",

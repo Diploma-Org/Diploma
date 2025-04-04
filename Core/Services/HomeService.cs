@@ -31,29 +31,25 @@ public class HomeService : IHomeService
     {
         return _providedServiceRepository.GetAll();
     }
-    public AppoinmentAllData ToAppoinmentAllData(Appoinment appoinment, string ServiceName)
+    public IEnumerable<Master> GetCurrentMasters(IEnumerable<AppoinmentAllData>appoinmentAllData)
     {
-        AppoinmentAllData appoinmentAllData = new(appoinment, ServiceName);
-        return appoinmentAllData;
+        var masters = _masterRepository.GetAll();
+        return masters.Where(m => appoinmentAllData.Any(a => a.IdMaster == m.Id));
     }
-    public IEnumerable<AppoinmentAllData>? GetAppoinmentsAllData()
+    public IEnumerable<AppoinmentAllData> GetAppoinmentsByDate(DateTime date)
     {
-        var appoinments = _appointmentRepository.GetAll();
-        var ProvidedServices = _providedServiceRepository.GetAll();
-        var appoinmentAllDatas = new List<AppoinmentAllData>();
-        foreach (var appoinment in appoinments)
-        {
-            var serviceName = ProvidedServices.FirstOrDefault(x => x.Id == appoinment.IdProvidedService)?.ServiceName;
-            if (serviceName != null)
-            {
-                appoinmentAllDatas.Add(new AppoinmentAllData(appoinment, serviceName));
-            }
-            else
-            {
-                return null;
-            }
-        }
+        var appoinments = _appointmentRepository.GetAll()
+            .Where(a => a.StartTime.Date == date.Date)
+            .ToList();
+
+        var providedServices = _providedServiceRepository.GetAll()
+            .ToDictionary(s => s.Id, s => s.ServiceName);
+
+        var appoinmentAllDatas = appoinments
+            .Where(a => providedServices.ContainsKey(a.IdProvidedService))
+            .Select(a => new AppoinmentAllData(a, providedServices[a.IdProvidedService]))
+            .ToList();
+
         return appoinmentAllDatas;
     }
-
 }
