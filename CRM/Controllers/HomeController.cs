@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 using BusinessLogic.Interfaces;
+using BusinessLogic.DTOs;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers;
@@ -9,24 +10,38 @@ namespace WebApp.Controllers;
 public class HomeController : Controller
 {
     private readonly IHomeService _homeService;
-    public HomeController(IHomeService homeService)
+    private readonly IAppointmentService _appointmentService;
+    public HomeController(IHomeService homeService, IAppointmentService appointmentService)
     {
         _homeService = homeService;
+        _appointmentService = appointmentService;
     }
 
-    public IActionResult Index()
+
+    public IActionResult Index(DateTime? date)
     {
-        var appoinmentAllData = _homeService.GetAppoinmentsAllData();
-        if (appoinmentAllData == null)
+        var selectedDate = date ?? DateTime.Today;
+
+        var appointmentAllData = _homeService.GetAppoinmentsByDate(selectedDate);
+        if (appointmentAllData == null)
             return NotFound();
-        
+
         var model = new HomeIndexViewModel
         {
-            Masters = _homeService.GetMasters(),
-            Appoinments = appoinmentAllData
+            Masters = _homeService.GetCurrentMasters(selectedDate),
+            ProvidedServices = _homeService.GetProvidedServices(),
+            Appointments = appointmentAllData,
+            SelectedDate = selectedDate
         };
+
         return View(model);
     }
+    public IActionResult BookAnAppointment(AppointmentBookingDTO model)
+    {
+        _appointmentService.AddAppointment(model);
+        return RedirectToAction("Index", new { date = model.Date });
+    }
+
 
     public IActionResult Privacy()
     {

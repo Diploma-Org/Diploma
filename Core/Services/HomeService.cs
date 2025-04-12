@@ -6,20 +6,24 @@ namespace BusinessLogic.Services;
 
 public class HomeService : IHomeService
 {
-    private readonly IRepository<Appoinment> _appointmentRepository;
+    private readonly IRepository<Appointment> _appointmentRepository;
     private readonly IRepository<Master> _masterRepository;
     private readonly IRepository<ProvidedService> _providedServiceRepository;
+    private readonly IRepository<WorkingMaster> _workingMasterRepository;
+    
 
-    public HomeService(IRepository<Appoinment> appointmentRepository, 
+    public HomeService(IRepository<Appointment> appointmentRepository, 
         IRepository<Master> masterRepository, 
-        IRepository<ProvidedService> providedServiceRepository)
+        IRepository<ProvidedService> providedServiceRepository,
+        IRepository<WorkingMaster> workingMasterRepository)
     {
         _appointmentRepository = appointmentRepository;
         _masterRepository = masterRepository;
         _providedServiceRepository = providedServiceRepository;
+        _workingMasterRepository = workingMasterRepository;
     }
 
-    public IEnumerable<Appoinment> GetAppoinments()
+    public IEnumerable<Appointment> GetAppoinments()
     {
         return _appointmentRepository.GetAll();
     }
@@ -31,29 +35,28 @@ public class HomeService : IHomeService
     {
         return _providedServiceRepository.GetAll();
     }
-    public AppoinmentAllData ToAppoinmentAllData(Appoinment appoinment, string ServiceName)
+    public IEnumerable<Master> GetCurrentMasters(DateTime date)
     {
-        AppoinmentAllData appoinmentAllData = new(appoinment, ServiceName);
-        return appoinmentAllData;
+        var masters = _masterRepository.GetAll();
+        return masters
+            .Where(m => _workingMasterRepository.GetAll()
+                .Any(wm => wm.Id == m.Id && wm.Date.Day == date.Day && wm.Date.Month == date.Month && wm.Date.Year == date.Year))
+            .ToList();
     }
-    public IEnumerable<AppoinmentAllData>? GetAppoinmentsAllData()
+    public IEnumerable<AppointmentAllData> GetAppoinmentsByDate(DateTime date)
     {
-        var appoinments = _appointmentRepository.GetAll();
-        var ProvidedServices = _providedServiceRepository.GetAll();
-        var appoinmentAllDatas = new List<AppoinmentAllData>();
-        foreach (var appoinment in appoinments)
-        {
-            var serviceName = ProvidedServices.FirstOrDefault(x => x.Id == appoinment.IdProvidedService)?.ServiceName;
-            if (serviceName != null)
-            {
-                appoinmentAllDatas.Add(new AppoinmentAllData(appoinment, serviceName));
-            }
-            else
-            {
-                return null;
-            }
-        }
+        var appoinments = _appointmentRepository.GetAll()
+            .Where(a => a.StartTime.Date == date.Date)
+            .ToList();
+
+        var providedServices = _providedServiceRepository.GetAll()
+            .ToDictionary(s => s.Id, s => s.ServiceName);
+
+        var appoinmentAllDatas = appoinments
+            .Where(a => providedServices.ContainsKey(a.IdProvidedService))
+            .Select(a => new AppointmentAllData(a, providedServices[a.IdProvidedService]))
+            .ToList();
+
         return appoinmentAllDatas;
     }
-
 }

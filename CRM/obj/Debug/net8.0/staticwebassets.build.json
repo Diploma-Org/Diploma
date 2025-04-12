@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "sQ4KTw11TCYbcaxpseRxIQlMLiKixqvorrAF7fGE2vE=",
+  "Hash": "e15bC/Bh52oN9zdJ4SlD5XGKi6GBoysMZvS4WN4LpnA=",
   "Source": "WebApp",
   "BasePath": "_content/WebApp",
   "Mode": "Default",
@@ -1195,6 +1195,25 @@
       "OriginalItemSpec": "/home/ivan/Documents/Diploma/CRM/obj/Debug/net8.0/scopedcss/projectbundle/WebApp.bundle.scp.css"
     },
     {
+      "Identity": "/home/ivan/Documents/Diploma/CRM/wwwroot/css/HomeIndex.css",
+      "SourceId": "WebApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ivan/Documents/Diploma/CRM/wwwroot/",
+      "BasePath": "_content/WebApp",
+      "RelativePath": "css/HomeIndex.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/HomeIndex.css"
+    },
+    {
       "Identity": "/home/ivan/Documents/Diploma/CRM/wwwroot/css/site.css",
       "SourceId": "WebApp",
       "SourceType": "Discovered",
@@ -1231,6 +1250,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
+    },
+    {
+      "Identity": "/home/ivan/Documents/Diploma/CRM/wwwroot/js/HomeIndex.js",
+      "SourceId": "WebApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/ivan/Documents/Diploma/CRM/wwwroot/",
+      "BasePath": "_content/WebApp",
+      "RelativePath": "js/HomeIndex.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/HomeIndex.js"
     },
     {
       "Identity": "/home/ivan/Documents/Diploma/CRM/wwwroot/js/site.js",

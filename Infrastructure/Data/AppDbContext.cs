@@ -9,8 +9,9 @@ public class AppDbContext : IdentityDbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) 
         : base(options) { }
     public DbSet<Master> Masters { get; set; }
-    public DbSet<Appoinment> Appointments { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
     public DbSet<ProvidedService> ProvidedServices { get; set; }
+    public DbSet<WorkingMaster> WorkingMasters { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -18,8 +19,9 @@ public class AppDbContext : IdentityDbContext
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.ApplyConfiguration(new MasterConfiguration());
-        modelBuilder.ApplyConfiguration(new AppoinmentConfiguration());
+        modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
         modelBuilder.ApplyConfiguration(new ProvidedServiceConfiguration());
         modelBuilder.ApplyConfiguration(new AdminConfiguration());
+        modelBuilder.ApplyConfiguration(new WorkingMasterConfiguration());
     }
 }

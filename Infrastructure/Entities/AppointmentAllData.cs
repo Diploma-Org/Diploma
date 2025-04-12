@@ -1,18 +1,18 @@
 namespace DataAccess.Entities
 {
-    public class AppoinmentAllData : Appoinment
+    public class AppointmentAllData : Appointment
     {
         public string ServiceName { get; set; }
-        public AppoinmentAllData(Appoinment appoinment, string serviceName)
+        public AppointmentAllData(Appointment appointment, string serviceName)
         {
-            Id = appoinment.Id;
-            StartTime = appoinment.StartTime;
-            Duration = appoinment.Duration;
-            IdMaster = appoinment.IdMaster;
-            IdProvidedService = appoinment.IdProvidedService;
-            VisitorName = appoinment.VisitorName;
-            VisitorPhone = appoinment.VisitorPhone;
-            IdMaster = appoinment.IdMaster;
+            Id = appointment.Id;
+            StartTime = appointment.StartTime;
+            EndTime = appointment.EndTime;
+            IdMaster = appointment.IdMaster;
+            IdProvidedService = appointment.IdProvidedService;
+            VisitorName = appointment.VisitorName;
+            VisitorPhone = appointment.VisitorPhone;
+            IdMaster = appointment.IdMaster;
             ServiceName = serviceName;
         }
     }
