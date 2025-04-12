@@ -1,4 +1,5 @@
-﻿@model WebApp.ViewModels.HomeIndexViewModel
+@model WebApp.ViewModels.HomeIndexViewModel
+@model WebApp.ViewModels.HomeIndexViewModel
 
 @{
     ViewData["Title"] = "Расписание";
@@ -153,3 +154,15 @@
      style="display: none;"></div>
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработка выбора дня
+        document.querySelectorAll('.day').forEach(day => {
+            day.addEventListener('click', function() {
+                const date = this.getAttribute('data-date');
+                window.location.href = `?date=${date}`;
+            });
+        });
+    });
+</script>

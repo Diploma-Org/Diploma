@@ -10,5 +10,8 @@ namespace WebApp.ViewModels
         public required DateTime SelectedDate { get; set; }
             
       
+        public required DateTime SelectedDate { get; set; }
+            
+      
     }
 }

@@ -26,6 +26,7 @@ public class HomeController : Controller
         if (appointmentAllData == null)
             return NotFound();
 
+
         var model = new HomeIndexViewModel
         {
             Masters = _homeService.GetCurrentMasters(selectedDate),
@@ -33,6 +34,7 @@ public class HomeController : Controller
             Appointments = appointmentAllData,
             SelectedDate = selectedDate
         };
+
 
         return View(model);
     }
