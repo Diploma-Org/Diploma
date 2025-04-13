@@ -113,9 +113,9 @@
                                     var duration = appointment.EndTime.Subtract(appointment.StartTime).TotalMinutes;
                                     var slotCount = (int)Math.Ceiling(duration / 15.0);
                                     
-                                    <td rowspan="@slotCount" class="appointment-cell" style="max-width: 100px; height: 25px; padding: 2px 8px;">
+                                    <td rowspan="@slotCount" class="appointment-cell" style="min-width: 120px; height: 25px; padding: 2px 8px;">
                                         <div class="appointment-slot" style="white-space: normal;">
-                                            <span style="display: block; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
+                                            <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
                                             <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
                                         </div>
                                     </td>
@@ -126,7 +126,7 @@
                                     currentTime >= a.StartTime && 
                                     currentTime < a.StartTime.AddMinutes(a.EndTime.Subtract(a.StartTime).TotalMinutes)))
                                 {
-                                    <td style="max-width: 100px; height: 25px; padding: 0; position: relative;">
+                                    <td style="min-width: 120px; height: 25px; padding: 0; position: relative;">
                                         <label class="time-slot-checkbox">
                                             <input type="checkbox" 
                                                    class="time-slot-input"
@@ -152,16 +152,3 @@
      data-selected-date='@selectedDate.ToString("yyyy-MM-dd")'
      style="display: none;"></div>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Обработка выбора дня
-        document.querySelectorAll('.day').forEach(day => {
-            day.addEventListener('click', function() {
-                const date = this.getAttribute('data-date');
-                window.location.href = `?date=${date}`;
-            });
-        });
-    });
-</script>
