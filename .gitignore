@@ -297,8 +297,4 @@ __pycache__/
 .history
 .ionide
 
-<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,aspnetcore
-=======
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,aspnetcore
->>>>>>> origin/2-calendar
