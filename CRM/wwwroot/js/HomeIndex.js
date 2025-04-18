@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.querySelector('input[name="StartTime"]').value = times.startTime;
         form.querySelector('input[name="EndTime"]').value = times.endTime;
         form.querySelector('select[name="MasterId"]').value = selectedMasterId;
-        console.log("selectedMasterId", selectedMasterId);
+        positionBookingForm();
     }
 
     function createBookingForm() {
@@ -82,14 +82,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove existing form if any
         if (bookingForm) {
             bookingForm.remove();
+            if (scrollHandler) {
+                window.removeEventListener('scroll', scrollHandler);
+            }
         }
     
+        // Find the first selected checkbox to position the form
+        const firstCheckbox = document.querySelector(
+            `.time-slot-input[data-row-index="${firstSelectedRow}"][data-master-id="${selectedMasterId}"]`
+        );
+        
+        if (!firstCheckbox) return;
+        
         // Create form element
         bookingForm = document.createElement('div');
         bookingForm.className = 'booking-form-container';
-        bookingForm.style.position = 'fixed';
-        bookingForm.style.zIndex = '1000';
-        
     
         // Generate masters options
         const mastersOptions = masters.map(master => 
@@ -146,13 +153,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </form>
         `;
+        
+        // Set the selected master in the form
         const form = bookingForm.querySelector('#appointmentForm');
         form.querySelector('select[name="MasterId"]').value = selectedMasterId;
     
-        // Add form to body
-        document.body.appendChild(bookingForm);
+        // Add form to the table container
+        const tableContainer = document.querySelector('.appointments-table-container');
+        tableContainer.appendChild(bookingForm);
     
-        // Add cancel button handler - direct event listener
+        // Position the form
+        positionBookingForm();
+        
+        // Update position on scroll
+        scrollHandler = function() {
+            positionBookingForm();
+        };
+        window.addEventListener('scroll', scrollHandler, { passive: true });
+    
+        // Add cancel button handler
         const cancelBtn = bookingForm.querySelector('#cancelBookingBtn');
         cancelBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -162,6 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 bookingForm.remove();
                 bookingForm = null;
             }
+            if (scrollHandler) {
+                window.removeEventListener('scroll', scrollHandler);
+                scrollHandler = null;
+            }
             
             // Clear all selections
             checkboxes.forEach(cb => cb.checked = false);
@@ -169,6 +192,54 @@ document.addEventListener('DOMContentLoaded', function() {
             firstSelectedRow = null;
             lastSelectedRow = null;
         });
+    }
+    
+    // Helper function to position the form correctly
+    function positionBookingForm() {
+        if (!bookingForm || selectedMasterId === null || firstSelectedRow === null) return;
+        
+        const firstCheckbox = document.querySelector(
+            `.time-slot-input[data-row-index="${firstSelectedRow}"][data-master-id="${selectedMasterId}"]`
+        );
+        if (!firstCheckbox) return;
+        
+        const cell = firstCheckbox.closest('td');
+        const cellRect = cell.getBoundingClientRect();
+        const tableContainer = document.querySelector('.appointments-table-container');
+        const containerRect = tableContainer.getBoundingClientRect();
+        
+        // Calculate position relative to container
+        let leftPosition = cellRect.right - containerRect.left + 10;
+        let topPosition = cellRect.top - containerRect.top;
+        
+        // Boundary checks
+        const formWidth = Math.min(400, window.innerWidth * 0.9);
+        const formHeight = 400; // Approximate height
+        
+        // Right boundary
+        if (leftPosition + formWidth > containerRect.width) {
+            leftPosition = cellRect.left - containerRect.left - formWidth - 10;
+        }
+        
+        // Left boundary
+        if (leftPosition < 0) {
+            leftPosition = 10;
+        }
+        
+        // Bottom boundary
+        if (topPosition + formHeight > containerRect.height) {
+            topPosition = containerRect.height - formHeight - 10;
+        }
+        
+        // Top boundary
+        if (topPosition < 0) {
+            topPosition = 10;
+        }
+        
+        // Apply positioning
+        bookingForm.style.left = `${leftPosition}px`;
+        bookingForm.style.top = `${topPosition}px`;
+        bookingForm.style.width = `${formWidth}px`;
     }
     
 
