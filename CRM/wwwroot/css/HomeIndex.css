@@ -1,0 +1,191 @@
+.schedule-container {
+    display: flex;
+    gap: 20px;
+}
+
+.calendar-section {
+    flex: 0 0 250px;
+}
+
+.appointments-table-container {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    height: 80vh;
+}
+
+.appointments-table-wrapper {
+    position: relative;
+}
+
+.month-calendar {
+    margin-bottom: 20px;
+}
+
+.month-title {
+    text-align: center;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.weekdays-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day, .empty-day {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.day {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.day:hover {
+    background: #e9ecef;
+}
+
+.day.selected {
+    background: #0d6efd;
+    color: white;
+}
+
+.table {
+    width: auto;
+    min-width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.appointment-cell {
+    background-color: #d4edda;
+    vertical-align: middle;
+    max-width: 100px;
+}
+
+.appointment-slot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    white-space: normal;
+    word-break: break-word;
+}
+.appointments-table-container {
+    position: relative; /* This creates a positioning context for the absolute form */
+}
+
+/* Custom checkbox styling */
+.time-slot-checkbox {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.time-slot-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    left: 0;
+    top: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-slot-input:checked ~ .checkmark {
+    background-color: #28a745;
+    color: white;
+}
+
+.time-slot-input:checked ~ .checkmark::after {
+    content: "✓";
+    color: white;
+}
+
+
+.booking-form-container {
+    position: absolute;  /* Changed from fixed to absolute */
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 400px;
+    max-width: 90vw;  /* Use viewport width for better responsiveness */
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: top 0.2s, left 0.2s;  /* Smooth movement when repositioning */
+}
+
+.booking-form-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}

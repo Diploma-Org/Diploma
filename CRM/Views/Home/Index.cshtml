@@ -1,8 +1,154 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+@model WebApp.ViewModels.HomeIndexViewModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    ViewData["Title"] = "Расписание";
+    var selectedDate = Model.SelectedDate;
+    var isSunday = selectedDate.DayOfWeek == DayOfWeek.Sunday;
+    var workDayStart = isSunday ? 10 : 9;
+    var workDayEnd = isSunday ? 16 : 19;
+    var timeSlots = new List<string>();
+    
+    // Generate 15-minute intervals
+    for (int hour = workDayStart; hour < workDayEnd; hour++)
+    {
+        for (int minute = 0; minute < 60; minute += 15)
+        {
+            timeSlots.Add($"{hour}:{minute:D2}");
+        }
+    }
+}
+<link rel="stylesheet" href="~/css/HomeIndex.css">
+<script src="~/js/HomeIndex.js"></script>
+
+<div class="schedule-container" style="display: flex; gap: 20px;">
+    <!-- Calendar Section -->
+    <div class="calendar-section" style="flex: 0 0 250px;">
+        @{
+            var monthsToShow = new[] { 
+                DateTime.Today.AddMonths(-1), 
+                DateTime.Today, 
+                DateTime.Today.AddMonths(1) 
+            };
+        }
+        
+        @foreach (var month in monthsToShow)
+        {
+            <div class="month-calendar">
+                <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
+                
+                <div class="weekdays-header">
+                    <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
+                    <div>Пт</div><div>Сб</div><div>Вс</div>
+                </div>
+                
+                <div class="days-grid">
+                    @{
+                        var firstDay = new DateTime(month.Year, month.Month, 1);
+                        var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
+                        var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
+                    }
+                    
+                    @for (int i = 0; i < startOffset; i++)
+                    {
+                        <div class="empty-day"></div>
+                    }
+                    
+                    @for (int day = 1; day <= daysInMonth; day++)
+                    {
+                        var date = new DateTime(month.Year, month.Month, day);
+                        <div class="day @(date.Date == selectedDate.Date ? "selected" : "")" 
+                             data-date="@date.ToString("yyyy-MM-dd")">
+                            @day
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Appointments Table Section -->
+    <div class="appointments-table-container" style="flex: 1; position: relative; overflow: auto; height: 80vh;">
+        <div class="appointments-table-wrapper">
+            <table class="table">
+                <colgroup>
+                    <col style="width: 80px; position: sticky; left: 0; z-index: 10; background: white;">
+                    @foreach (var master in Model.Masters)
+                    {
+                        <col style="width: 100px; max-width: 100px;">
+                    }
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th style="position: sticky; top: 0; left: 0; z-index: 20; background: #f8f9fa; height: 30px;">Time</th>
+                        @foreach (var master in Model.Masters)
+                        {
+                            <th style="position: sticky; top: 0; z-index: 15; background: #f8f9fa; max-width: 100px; overflow: hidden; text-overflow: ellipsis; height: 30px;" title="@master.Name">@master.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var timeSlotIndex = 0;
+                        var processedAppointments = new List<int>();
+                    }
+                    @while (timeSlotIndex < timeSlots.Count)
+                    {
+                        var timeSlot = timeSlots[timeSlotIndex];
+                        var timeParts = timeSlot.Split(':');
+                        var hour = int.Parse(timeParts[0]);
+                        var minute = int.Parse(timeParts[1]);
+                        var currentTime = new DateTime(selectedDate.Year, selectedDate.Month, selectedDate.Day, hour, minute, 0);
+                        
+                        <tr style="height: 25px;">
+                            <td style="position: sticky; left: 0; z-index: 5; background: white; height: 25px; padding: 2px 8px;">@timeSlot</td>
+                            @foreach (var master in Model.Masters)
+                            {
+                                var appointment = Model.Appointments.FirstOrDefault(a => 
+                                    !processedAppointments.Contains(a.Id) &&
+                                    a.IdMaster == master.Id && 
+                                    a.StartTime == currentTime);
+                                
+                                if (appointment != null)
+                                {
+                                    var duration = appointment.EndTime.Subtract(appointment.StartTime).TotalMinutes;
+                                    var slotCount = (int)Math.Ceiling(duration / 15.0);
+                                    
+                                    <td rowspan="@slotCount" class="appointment-cell" style="min-width: 120px; height: 25px; padding: 2px 8px;">
+                                        <div class="appointment-slot" style="white-space: normal;">
+                                            <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
+                                            <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
+                                        </div>
+                                    </td>
+                                    processedAppointments.Add(appointment.Id);
+                                }
+                                else if (!Model.Appointments.Any(a => 
+                                    a.IdMaster == master.Id && 
+                                    currentTime >= a.StartTime && 
+                                    currentTime < a.StartTime.AddMinutes(a.EndTime.Subtract(a.StartTime).TotalMinutes)))
+                                {
+                                    <td style="min-width: 120px; height: 25px; padding: 0; position: relative;">
+                                        <label class="time-slot-checkbox">
+                                            <input type="checkbox" 
+                                                   class="time-slot-input"
+                                                   data-master-id="@master.Id" 
+                                                   data-time="@hour" 
+                                                   data-minute="@minute"
+                                                   data-row-index="@timeSlotIndex">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </td>
+                                }
+                            }
+                        </tr>
+                        timeSlotIndex++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+<div id="app-data" 
+     data-masters='@Json.Serialize(Model.Masters)'
+     data-services='@Json.Serialize(Model.ProvidedServices)'
+     data-selected-date='@selectedDate.ToString("yyyy-MM-dd")'
+     style="display: none;"></div>
 </div>
