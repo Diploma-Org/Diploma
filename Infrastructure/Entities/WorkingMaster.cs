@@ -6,5 +6,6 @@ public class WorkingMaster : IEntity
 {
     [Column("IdWorkingMaster")]
     public int Id { get; set; }
+    public int IdMaster { get; set; }
     public DateTime Date { get; set; }
 }

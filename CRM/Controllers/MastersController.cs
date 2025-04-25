@@ -1,5 +1,6 @@
 using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
@@ -10,9 +11,44 @@ namespace WebApp.Controllers
         {
             _mastersService = mastersService;
         }
-        public IActionResult Masters()
+        public IActionResult Index(DateTime? date, string? errorMessage)
         {
-            return View();
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                ViewData["ErrorMessage"] = errorMessage;
+            }
+            var selectedDate = date ?? DateTime.Today;
+
+            var WorkingMasters = _mastersService.GetMastersByDate(selectedDate);
+            if (WorkingMasters == null)
+                return NotFound();
+            {
+                var masters = _mastersService.GetMasters();
+                var viewModel = new MastersIndexViewModel(masters, WorkingMasters, selectedDate);
+                return View(viewModel);
+            }
+        }
+        public IActionResult AssignMasterToDate(int masterId, DateTime date)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _mastersService.AddWorkingMaster(masterId, date);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("Index", new { date, errorMessage });
+        }
+        public IActionResult RemoveMasterFromDate(int id)
+        {
+            string? errorMessage = null;
+            try {_mastersService.RemoveWorkingMaster(id);}
+            catch (Exception ex){errorMessage = ex.Message;}
+
+            return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
+
         }
     }
 }

@@ -1,15 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Day selection handler
-    document.querySelectorAll('.day').forEach(day => {
-        day.addEventListener('click', function() {
-            const date = this.getAttribute('data-date');
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('date', date);
-            window.location.search = urlParams.toString();
-        });
-    });
-
-    // Checkbox selection handler with strict rules
     const checkboxes = document.querySelectorAll('.time-slot-input');
     let selectedMasterId = null;
     let firstSelectedRow = null;
