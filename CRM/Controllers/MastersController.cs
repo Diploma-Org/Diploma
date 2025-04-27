@@ -1,4 +1,5 @@
 using BusinessLogic.Interfaces;
+using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.ViewModels;
 
@@ -49,6 +50,32 @@ namespace WebApp.Controllers
 
             return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
 
+        }
+        public IActionResult DeleteMaster(int id)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _mastersService.RemoveMaster(id);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
+        }
+        public IActionResult AddMaster(string name, string surname, string phone)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _mastersService.AddMaster(name, surname, phone);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
         }
     }
 }

@@ -63,10 +63,18 @@ public class MastersService : IMastersService
         _mastersRepository.Delete(master);
         _mastersRepository.Save();
     }
-    public void AddMaster(Master master)
+    public void AddMaster(string name, string surname, string phone)
     {
-        if (master == null)
-            throw new ArgumentNullException(nameof(master));
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(surname) || string.IsNullOrEmpty(phone))
+            throw new ArgumentException("Name, surname and phone number cannot be empty.");
+        var master = new Master
+        {
+            Name = name,
+            Surname = surname,
+            PhoneNumber = phone
+        };
+        if (_mastersRepository.GetAll().Any(m => m.PhoneNumber == phone))
+            throw new InvalidOperationException("This master already exists.");
         _mastersRepository.Insert(master);
         _mastersRepository.Save();
     }

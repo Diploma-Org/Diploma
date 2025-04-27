@@ -51,7 +51,16 @@
             </div>
         }
     </div>
+   
    <div class="masters-section container mt-4">
+        <div class="row">
+            @if(ViewData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewData["ErrorMessage"]
+                </div>
+            }
+        </div>
         <div class="row">
             <!-- Card 1: Управление мастерами -->
             <div class="col-md-6 mb-4">
@@ -108,12 +117,7 @@
                             </select>
                             <button type="submit" class="btn btn-success">Assign</button>
                         </form>
-                        @if(ViewData["ErrorMessage"] != null)
-                        {
-                            <div class="alert alert-danger">
-                                @ViewData["ErrorMessage"]
-                            </div>
-                        }
+                        
 
                         <ul class="list-group">
                             @foreach (var master in Model.WorkingMasters)

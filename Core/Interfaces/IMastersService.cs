@@ -9,5 +9,5 @@ public interface IMastersService
     void AddWorkingMaster(int masterId, DateTime date);
     void RemoveWorkingMaster(int masterId);
     void RemoveMaster(int masterId);
-    void AddMaster(Master master);
+    void AddMaster(string name, string surname, string phone);
 }
