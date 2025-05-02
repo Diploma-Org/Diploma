@@ -40,7 +40,7 @@ public class HomeService : IHomeService
         var masters = _masterRepository.GetAll();
         return masters
             .Where(m => _workingMasterRepository.GetAll()
-                .Any(wm => wm.Id == m.Id && wm.Date.Day == date.Day && wm.Date.Month == date.Month && wm.Date.Year == date.Year))
+                .Any(wm => wm.IdMaster == m.Id && wm.Date.Day == date.Day && wm.Date.Month == date.Month && wm.Date.Year == date.Year))
             .ToList();
     }
     public IEnumerable<AppointmentAllData> GetAppoinmentsByDate(DateTime date)

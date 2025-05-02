@@ -35,6 +35,7 @@ builder.Services.AddRepository();
 
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IMastersService, MastersService>();
 
 builder.Services.AddValidators();
 

@@ -1,0 +1,141 @@
+@model WebApp.ViewModels.MastersIndexViewModel
+@{
+    ViewData["Title"] = "Расписание";
+    var selectedDate = Model.SelectedDate;
+}
+<link rel="stylesheet" href="~/css/Calendar.css">
+<link rel="stylesheet" href="~/css/MastersIndex.css">
+<script src="~/js/Calendar.js"></script>
+<div class="masters-container">
+    <div class="calendar-section" style="flex: 0 0 250px;">
+        @{
+            var monthsToShow = new[] { 
+                DateTime.Today.AddMonths(-1), 
+                DateTime.Today, 
+                DateTime.Today.AddMonths(1) 
+            };
+        }
+
+        
+        @foreach (var month in monthsToShow)
+        {
+            <div class="month-calendar">
+                <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
+                
+                <div class="weekdays-header">
+                    <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
+                    <div>Пт</div><div>Сб</div><div>Вс</div>
+                </div>
+                
+                <div class="days-grid">
+                    @{
+                        var firstDay = new DateTime(month.Year, month.Month, 1);
+                        var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
+                        var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
+                    }
+                    
+                    @for (int i = 0; i < startOffset; i++)
+                    {
+                        <div class="empty-day"></div>
+                    }
+                    
+                    @for (int day = 1; day <= daysInMonth; day++)
+                    {
+                        var date = new DateTime(month.Year, month.Month, day);
+                        <div class="day @(date.Date == selectedDate.Date ? "selected" : "")" 
+                                data-date="@date.ToString("yyyy-MM-dd")">
+                            @day
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+   
+   <div class="masters-section container mt-4">
+        <div class="row">
+            @if(ViewData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewData["ErrorMessage"]
+                </div>
+            }
+        </div>
+        <div class="row">
+            <!-- Card 1: Управление мастерами -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Masters management</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AddMaster" method="post" class="row g-2 mb-3">
+                            <div class="col-md-4">
+                                <input type="text" name="name" class="form-control" placeholder="Name" required />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="surname" class="form-control" placeholder="Surname" required />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="tel" name="phone" class="form-control" placeholder="+38" required pattern="\+?[0-9\s\-]+" />
+                            </div>
+                            <div class="col-12 d-flex justify-content-start">
+                                <button type="submit" class="btn btn-success">Add</button>
+                            </div>
+                        </form>
+                        <ul class="list-group">
+                            @foreach (var master in Model.Masters)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@master.Name</span>
+                                    <form asp-action="DeleteMaster" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@master.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Назначение на дату -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Masters on @selectedDate.ToString("dd MMMM yyyy")</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AssignMasterToDate" method="post" class="d-flex mb-3 gap-2">
+                            <input type="hidden" name="date" value="@selectedDate.ToString("yyyy-MM-dd")" />
+                            <select name="masterId" class="form-select" required>
+                                <option value="" disabled selected>Choose master</option>
+                                @foreach (var master in Model.Masters)
+                                {
+                                    <option value="@master.Id">@master.Name</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-success">Assign</button>
+                        </form>
+                        
+
+                        <ul class="list-group">
+                            @foreach (var master in Model.WorkingMasters)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@Model.Masters.First(m => m.Id == master.IdMaster).Name</span>
+                                    <form asp-action="RemoveMasterFromDate" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@master.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
