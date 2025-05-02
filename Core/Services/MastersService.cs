@@ -47,9 +47,9 @@ public class MastersService : IMastersService
         _workingMastersRepository.Insert(workingMaster);
         _workingMastersRepository.Save();
     }
-    public void RemoveWorkingMaster(int id)
+    public void RemoveWorkingMaster(int masterId)
     {
-        var workingMaster = _workingMastersRepository.GetById(id);
+        var workingMaster = _workingMastersRepository.GetById(masterId);
         if (workingMaster == null)
             throw new ArgumentNullException(nameof(workingMaster));
         _workingMastersRepository.Delete(workingMaster);

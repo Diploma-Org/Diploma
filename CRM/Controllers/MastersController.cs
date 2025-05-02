@@ -23,11 +23,9 @@ namespace WebApp.Controllers
             var WorkingMasters = _mastersService.GetMastersByDate(selectedDate);
             if (WorkingMasters == null)
                 return NotFound();
-            {
-                var masters = _mastersService.GetMasters();
-                var viewModel = new MastersIndexViewModel(masters, WorkingMasters, selectedDate);
-                return View(viewModel);
-            }
+            var masters = _mastersService.GetMasters();
+            var viewModel = new MastersIndexViewModel(masters, WorkingMasters, selectedDate);
+            return View(viewModel);
         }
         public IActionResult AssignMasterToDate(int masterId, DateTime date)
         {
