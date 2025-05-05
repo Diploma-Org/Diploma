@@ -18,8 +18,12 @@ public class HomeController : Controller
     }
 
 
-    public IActionResult Index(DateTime? date)
+    public IActionResult Index(DateTime? date, string? errorMessage)
     {
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            ViewData["ErrorMessage"] = errorMessage;
+        }
         var selectedDate = date ?? DateTime.Today;
 
         var appointmentAllData = _homeService.GetAppoinmentsByDate(selectedDate);
@@ -38,7 +42,7 @@ public class HomeController : Controller
 
         return View(model);
     }
-    public IActionResult BookAnAppointment(AppointmentBookingDTO model)
+    public IActionResult BookAnAppointment(AppointmentBookingDto model)
     {
         _appointmentService.AddAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });

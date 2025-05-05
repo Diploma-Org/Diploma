@@ -12,16 +12,18 @@ public class AppDbContext : IdentityDbContext
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<ProvidedService> ProvidedServices { get; set; }
     public DbSet<WorkingMaster> WorkingMasters { get; set; }
+    public DbSet<MasterService> MasterServices { get; set; }
 
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
         
-        modelBuilder.ApplyConfiguration(new MasterConfiguration());
-        modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
-        modelBuilder.ApplyConfiguration(new ProvidedServiceConfiguration());
-        modelBuilder.ApplyConfiguration(new AdminConfiguration());
-        modelBuilder.ApplyConfiguration(new WorkingMasterConfiguration());
+        builder.ApplyConfiguration(new MasterConfiguration());
+        builder.ApplyConfiguration(new AppointmentConfiguration());
+        builder.ApplyConfiguration(new ProvidedServiceConfiguration());
+        builder.ApplyConfiguration(new AdminConfiguration());
+        builder.ApplyConfiguration(new WorkingMasterConfiguration());
+        builder.ApplyConfiguration(new MasterServiceConfiguration());
     }
 }

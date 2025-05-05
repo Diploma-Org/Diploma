@@ -32,6 +32,12 @@
                 DateTime.Today.AddMonths(1) 
             };
         }
+        @if(ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
         
         @foreach (var month in monthsToShow)
         {

@@ -3,5 +3,5 @@ namespace BusinessLogic.Interfaces;
 
 public interface IAppointmentService
 {
-    void AddAppointment(AppointmentBookingDTO appointment);
+    void AddAppointment(AppointmentBookingDto appointment);
 }
