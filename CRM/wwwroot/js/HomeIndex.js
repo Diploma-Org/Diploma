@@ -58,178 +58,180 @@ document.addEventListener('DOMContentLoaded', function() {
         positionBookingForm();
     }
 
-    function createBookingForm() {
-        const times = updateSelectedTime();
-        if (!times) return;
-        
-        // Get data from hidden div
+    function createBookingForm(appointmentData = null) {
         const appData = document.getElementById('app-data');
         const masters = JSON.parse(appData.dataset.masters);
         const services = JSON.parse(appData.dataset.services);
-        const selectedDate = appData.dataset.selectedDate;
     
-        // Remove existing form if any
-        if (bookingForm) {
+        // Determine selected time
+        let times;
+        if (appointmentData) {
+            const start = new Date(appointmentData.startTime);
+            const end = new Date(appointmentData.endTime);
+            times = {
+                startTime: `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`,
+                endTime: `${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`
+            };
+        } else {
+            times = updateSelectedTime();
+        }
+    
+        console.log("Times for booking form:", times);
+    
+        const selectedDate = appointmentData?.SelectedDate || appData.dataset.selectedDate;
+    
+        // If form exists and no time is available, remove it
+        if (bookingForm && times === null) {
             bookingForm.remove();
             if (scrollHandler) {
                 window.removeEventListener('scroll', scrollHandler);
             }
         }
     
-        // Find the first selected checkbox to position the form
-        const firstCheckbox = document.querySelector(
-            `.time-slot-input[data-row-index="${firstSelectedRow}"][data-master-id="${selectedMasterId}"]`
-        );
-        
-        if (!firstCheckbox) return;
-        
-        // Create form element
         bookingForm = document.createElement('div');
         bookingForm.className = 'booking-form-container';
     
-        // Generate masters options
-        const mastersOptions = masters.map(master => 
-            `<option value="${master.id}">${master.name}</option>`
+        const clientName = appointmentData?.visitorName || "";
+        const clientPhone = appointmentData?.visitorPhone || "";
+        const comment = appointmentData?.Comment || "";
+        const selectedServiceId = appointmentData?.idProvidedService || "";
+        selectedMasterId = appointmentData?.idMaster || selectedMasterId;
+    
+        const mastersOptions = masters.map(master =>
+            `<option value="${master.id}" ${master.id == selectedMasterId ? 'selected' : ''}>${master.name}</option>`
         ).join('');
     
-        // Generate services options
-        const servicesOptions = services.map(service => 
-            `<option value="${service.id}">${service.serviceName}</option>`
+        const servicesOptions = services.map(service =>
+            `<option value="${service.id}" ${service.id == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
         ).join('');
     
-        // Form content
+        const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
+    
         bookingForm.innerHTML = `
-            <h4>Booking Form</h4>
+            <h4>${appointmentData ? "Edit" : "Booking"} Form</h4>
             <p>Chosen time: ${times.startTime} - ${times.endTime}</p>
-            
-            <form id="appointmentForm" method="post" action="/Home/BookAnAppointment">
+    
+            <form id="appointmentForm" method="post" action="${actionUrl}">
                 <input type="hidden" name="date" value="${selectedDate}">
                 <input type="hidden" name="StartTime" value="${times.startTime}">
                 <input type="hidden" name="EndTime" value="${times.endTime}">
-                
-                <div class="form-group" style="margin-bottom: 15px;">
+                ${appointmentData ? `<input type="hidden" name="Id" value="${appointmentData.id}">` : ''}
+    
+                <div class="form-group">
                     <label>Master:</label>
-                    <select name="MasterId" class="form-control" value="${selectedMasterId}" required style="width: 100%; padding: 8px;">
-                        ${mastersOptions}
-                    </select>
+                    <select name="MasterId" required>${mastersOptions}</select>
                 </div>
-                
-                <div class="form-group" style="margin-bottom: 15px;">
+    
+                <div class="form-group">
                     <label>Service:</label>
-                    <select name="ServiceId" class="form-control" required style="width: 100%; padding: 8px;">
-                        ${servicesOptions}
-                    </select>
+                    <select name="ServiceId" required>${servicesOptions}</select>
                 </div>
-                
-                <div class="form-group" style="margin-bottom: 15px;">
+    
+                <div class="form-group">
                     <label>Client name:</label>
-                    <input type="text" name="clientName" class="form-control" required style="width: 100%; padding: 8px;">
+                    <input type="text" name="clientName" required value="${clientName}">
                 </div>
-                
-                <div class="form-group" style="margin-bottom: 15px;">
+    
+                <div class="form-group">
                     <label>Phone number:</label>
-                    <input type="tel" name="clientPhone" class="form-control" required style="width: 100%; padding: 8px;">
+                    <input type="tel" name="clientPhone" required value="${clientPhone}">
                 </div>
-                
-                <div class="form-group" style="margin-bottom: 15px;">
+    
+                <div class="form-group">
                     <label>Additional comments:</label>
-                    <textarea name="comment" class="form-control" style="width: 100%; padding: 8px;"></textarea>
+                    <textarea name="comment">${comment}</textarea>
                 </div>
-                
-                <div style="display: flex; justify-content: space-between;">
-                    <button type="button" id="cancelBookingBtn" class="btn btn-secondary" style="padding: 8px 15px;">Cancel</button>
-                    <button type="submit" class="btn btn-primary" style="padding: 8px 15px;">Book</button>
+    
+                <div style="display:flex; justify-content: space-between;">
+                    <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">${appointmentData ? "Save Changes" : "Book"}</button>
                 </div>
             </form>
         `;
-        
-        // Set the selected master in the form
-        const form = bookingForm.querySelector('#appointmentForm');
-        form.querySelector('select[name="MasterId"]').value = selectedMasterId;
     
-        // Add form to the table container
-        const tableContainer = document.querySelector('.appointments-table-container');
-        tableContainer.appendChild(bookingForm);
-    
-        // Position the form
+        document.querySelector('.appointments-table-container').appendChild(bookingForm);
         positionBookingForm();
-        
-        // Update position on scroll
-        scrollHandler = function() {
-            positionBookingForm();
-        };
+    
+        scrollHandler = () => positionBookingForm();
         window.addEventListener('scroll', scrollHandler, { passive: true });
     
-        // Add cancel button handler
-        const cancelBtn = bookingForm.querySelector('#cancelBookingBtn');
-        cancelBtn.addEventListener('click', function(e) {
+        bookingForm.querySelector('#cancelBookingBtn').addEventListener('click', function (e) {
             e.preventDefault();
-            e.stopPropagation();
-            
-            if (bookingForm) {
-                bookingForm.remove();
-                bookingForm = null;
+            if (bookingForm){
+                bookingForm.remove(); 
+                checkboxes.forEach(cb => cb.checked = false);
+                selectedMasterId = null;
+                firstSelectedRow = null;
+                lastSelectedRow = null;
             }
+            bookingForm = null;
             if (scrollHandler) {
                 window.removeEventListener('scroll', scrollHandler);
                 scrollHandler = null;
             }
-            
-            // Clear all selections
-            checkboxes.forEach(cb => cb.checked = false);
-            selectedMasterId = null;
-            firstSelectedRow = null;
-            lastSelectedRow = null;
         });
     }
     
-    // Helper function to position the form correctly
+    
+    
     function positionBookingForm() {
-        if (!bookingForm || selectedMasterId === null || firstSelectedRow === null) return;
-        
+        if (!bookingForm) return;
+    
+        const tableContainer = document.querySelector('.appointments-table-container');
+        const containerRect = tableContainer.getBoundingClientRect();
+        const formWidth = Math.min(400, window.innerWidth * 0.9);
+        const formHeight = 400; // Approximate height
+    
+        // Case: edit mode (no selected rows)
+        if (firstSelectedRow === null || selectedMasterId === null) {
+            bookingForm.style.position = 'absolute';
+            bookingForm.style.top = `${(containerRect.height - formHeight) / 2}px`;
+            bookingForm.style.left = `${(containerRect.width - formWidth) / 2}px`;
+            bookingForm.style.width = `${formWidth}px`;
+            return;
+        }
+    
+        // Case: normal selection mode
         const firstCheckbox = document.querySelector(
             `.time-slot-input[data-row-index="${firstSelectedRow}"][data-master-id="${selectedMasterId}"]`
         );
         if (!firstCheckbox) return;
-        
+    
         const cell = firstCheckbox.closest('td');
         const cellRect = cell.getBoundingClientRect();
-        const tableContainer = document.querySelector('.appointments-table-container');
-        const containerRect = tableContainer.getBoundingClientRect();
-        
+    
         // Calculate position relative to container
         let leftPosition = cellRect.right - containerRect.left + 10;
         let topPosition = cellRect.top - containerRect.top;
-        
+    
         // Boundary checks
-        const formWidth = Math.min(400, window.innerWidth * 0.9);
-        const formHeight = 400; // Approximate height
-        
         // Right boundary
         if (leftPosition + formWidth > containerRect.width) {
             leftPosition = cellRect.left - containerRect.left - formWidth - 10;
         }
-        
+    
         // Left boundary
         if (leftPosition < 0) {
             leftPosition = 10;
         }
-        
+    
         // Bottom boundary
         if (topPosition + formHeight > containerRect.height) {
             topPosition = containerRect.height - formHeight - 10;
         }
-        
+    
         // Top boundary
         if (topPosition < 0) {
             topPosition = 10;
         }
-        
+    
         // Apply positioning
+        bookingForm.style.position = 'absolute';
         bookingForm.style.left = `${leftPosition}px`;
         bookingForm.style.top = `${topPosition}px`;
         bookingForm.style.width = `${formWidth}px`;
     }
+    
     
 
     function handleCheckboxSelection(currentMasterId, currentRow) {
@@ -324,4 +326,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('selectstart', function(e) {
         e.preventDefault();
     });
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-appointment')) {
+            e.preventDefault();
+            const appointmentData = JSON.parse(e.target.dataset.appointment);
+            console.log("Parsed appointment data:", appointmentData); // 👈 Check this
+            createBookingForm(appointmentData);
+        }
+    });
+    
 });

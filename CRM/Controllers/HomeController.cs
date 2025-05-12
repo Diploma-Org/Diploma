@@ -47,6 +47,16 @@ public class HomeController : Controller
         _appointmentService.AddAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });
     }
+    public IActionResult EditAppointment(AppointmentBookingDto model)
+    {
+        _appointmentService.EditAppointment(model);
+        return RedirectToAction("Index", new { date = model.Date });
+    }
+    public IActionResult DeleteAppointment(AppointmentBookingDto model)
+    {
+        _appointmentService.DeleteAppointment(model);
+        return RedirectToAction("Index", new { date = model.Date });
+    }
 
 
     public IActionResult Privacy()
@@ -59,3 +69,4 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
+
