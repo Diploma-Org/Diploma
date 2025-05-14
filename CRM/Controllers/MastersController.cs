@@ -1,3 +1,4 @@
+using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,11 @@ namespace WebApp.Controllers
     public class MastersController : Controller
     {
         private readonly IMastersService _mastersService;
-        public MastersController(IMastersService mastersService)
+        private readonly IMasterServicesService _masterServicesService;
+        public MastersController(IMastersService mastersService, IMasterServicesService masterServicesService)
         {
             _mastersService = mastersService;
+            _masterServicesService = masterServicesService;
         }
         public IActionResult Index(DateTime? date, string? errorMessage)
         {
@@ -74,6 +77,58 @@ namespace WebApp.Controllers
                 errorMessage = ex.Message;
             }
             return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
+        }
+        public IActionResult DisplayMasterServices(int? IdMaster)
+        {
+            ViewBag.Masters = _mastersService.GetMasters();
+            try
+            {
+                return View(_masterServicesService.GetSevicesToDisplayForMaster(IdMaster));
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction("Index","Home", new { date = DateTime.Today, errorMessage = ViewData["ErrorMessage"] });
+        }
+        public IActionResult AddMasterServiceFromList(int IdMaster, int IdService)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _masterServicesService.AddMasterServiceFromList(IdMaster, IdService);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("DisplayMasterServices", new {IdMaster, errorMessage });
+        }
+        public IActionResult AddService(string ServiceName, decimal Price)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _masterServicesService.AddService(ServiceName, Price);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("DisplayMasterServices", new { errorMessage });
+        }
+        public IActionResult DeleteService(int IdMaster, int IdService)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _masterServicesService.DeleteService(IdMaster, IdService);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("DisplayMasterServices", new { IdMaster, errorMessage });
         }
     }
 }

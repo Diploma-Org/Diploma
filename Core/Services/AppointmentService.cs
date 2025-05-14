@@ -14,18 +14,46 @@ public class AppointmentService : IAppointmentService
         _appointmentRepository = appointmentRepository;
     }
 
-    public void AddAppointment(AppointmentBookingDTO model)
+    public void AddAppointment(AppointmentBookingDto appointment)
     {
-        var appointment = new Appointment
+        if (!(appointment.ClientName != null && appointment.ClientPhone != null && appointment.StartTime != null && appointment.EndTime != null))
+            throw new ArgumentNullException(nameof(appointment));
+        var Appointment = new Appointment
         {
-            IdMaster = model.MasterId,
-            IdProvidedService = model.ServiceId,
-            StartTime = model.Date.Add(DateTime.ParseExact(model.StartTime, "HH:mm", null).TimeOfDay),
-            EndTime = model.Date.Add(DateTime.ParseExact(model.EndTime, "HH:mm", null).TimeOfDay),
-            VisitorName = model.ClientName,
-            VisitorPhone = model.ClientPhone
+            IdMaster = appointment.MasterId,
+            IdProvidedService = appointment.ServiceId,
+            StartTime = appointment.Date.Add(DateTime.ParseExact(appointment.StartTime, "HH:mm", null).TimeOfDay),
+            EndTime = appointment.Date.Add(DateTime.ParseExact(appointment.EndTime, "HH:mm", null).TimeOfDay),
+            VisitorName = appointment.ClientName,
+            VisitorPhone = appointment.ClientPhone
         };
-        _appointmentRepository.Insert(appointment);
+        _appointmentRepository.Insert(Appointment);
+        _appointmentRepository.Save();
+    }
+    public void EditAppointment(AppointmentBookingDto appointment)
+    {
+        if (!(appointment.ClientName != null && appointment.ClientPhone != null && appointment.StartTime != null && appointment.EndTime != null))
+            throw new ArgumentNullException(nameof(appointment));
+        var Appointment = new Appointment
+        {
+            Id = appointment.Id,
+            IdMaster = appointment.MasterId,
+            IdProvidedService = appointment.ServiceId,
+            StartTime = appointment.Date.Add(DateTime.ParseExact(appointment.StartTime, "HH:mm", null).TimeOfDay),
+            EndTime = appointment.Date.Add(DateTime.ParseExact(appointment.EndTime, "HH:mm", null).TimeOfDay),
+            VisitorName = appointment.ClientName,
+            VisitorPhone = appointment.ClientPhone
+        };
+        _appointmentRepository.Update(Appointment);
+        _appointmentRepository.Save();
+    }
+    public void DeleteAppointment(AppointmentBookingDto appointment)
+    {
+        var Appointment = new Appointment
+        {
+            Id = appointment.Id
+        };
+        _appointmentRepository.Delete(Appointment);
         _appointmentRepository.Save();
     }
 }

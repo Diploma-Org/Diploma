@@ -32,6 +32,12 @@
                 DateTime.Today.AddMonths(1) 
             };
         }
+        @if(ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
         
         @foreach (var month in monthsToShow)
         {
@@ -119,6 +125,19 @@
                                         <div class="appointment-slot" style="white-space: normal;">
                                             <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
                                             <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
+                                             <div class="appointment-actions" style="margin-top: 5px;">
+                                                <button class="btn btn-sm btn-primary edit-appointment"
+                                                        data-appointment='@Html.Raw(Json.Serialize(appointment))'>
+                                                    Edit
+                                                </button>
+                                                <form asp-action="DeleteAppointment" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@appointment.Id" />
+                                                    <input type="hidden" name="Date" value="@Model.SelectedDate" />
+                                                    <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Delete this appointment?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </td>
                                     processedAppointments.Add(appointment.Id);

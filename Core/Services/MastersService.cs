@@ -33,7 +33,7 @@ public class MastersService : IMastersService
         var master = _mastersRepository.GetById(masterId);
 
         if (master == null)
-            throw new ArgumentNullException(nameof(master));
+            throw new ArgumentNullException($"Working master with ID {masterId} not found.");
 
         var workingMaster = new WorkingMaster
         {
@@ -51,7 +51,7 @@ public class MastersService : IMastersService
     {
         var workingMaster = _workingMastersRepository.GetById(masterId);
         if (workingMaster == null)
-            throw new ArgumentNullException(nameof(workingMaster));
+            throw new ArgumentNullException($"Working master with ID {masterId} not found.");
         _workingMastersRepository.Delete(workingMaster);
         _workingMastersRepository.Save();
     }
@@ -59,9 +59,17 @@ public class MastersService : IMastersService
     {
         var master = _mastersRepository.GetById(masterId);
         if (master == null)
-            throw new ArgumentNullException(nameof(master));
+            throw new ArgumentNullException($"Working master with ID {masterId} not found.");
         _mastersRepository.Delete(master);
         _mastersRepository.Save();
+
+        var workingMasters = _workingMastersRepository.GetAll()
+            .Where(wm => wm.IdMaster == masterId).ToList();
+        foreach (var workingMaster in workingMasters)
+        {
+            _workingMastersRepository.Delete(workingMaster);
+        }
+        _workingMastersRepository.Save();
     }
     public void AddMaster(string name, string surname, string phone)
     {

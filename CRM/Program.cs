@@ -21,27 +21,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddRazorPages();
 
-// builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-//     {
-//         options.SignIn.RequireConfirmedAccount = true;
-//         options.User.RequireUniqueEmail = true;
-//     })
-//     .AddEntityFrameworkStores<AppDbContext>()
-//     .AddDefaultTokenProviders()
-//     .AddDefaultUI();
-
-
 builder.Services.AddRepository();
 
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IMasterServicesService, MasterServicesService>();
 builder.Services.AddScoped<IMastersService, MastersService>();
 
 builder.Services.AddValidators();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
