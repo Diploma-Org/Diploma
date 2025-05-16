@@ -27,6 +27,7 @@ builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IMasterServicesService, MasterServicesService>();
 builder.Services.AddScoped<IMastersService, MastersService>();
+builder.Services.AddScoped<ISalaryService, SalaryService>();
 
 builder.Services.AddValidators();
 

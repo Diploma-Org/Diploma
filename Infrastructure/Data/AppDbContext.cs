@@ -13,17 +13,19 @@ public class AppDbContext : IdentityDbContext
     public DbSet<ProvidedService> ProvidedServices { get; set; }
     public DbSet<WorkingMaster> WorkingMasters { get; set; }
     public DbSet<MasterService> MasterServices { get; set; }
+    public DbSet<Salary> Salaries { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         builder.ApplyConfiguration(new MasterConfiguration());
         builder.ApplyConfiguration(new AppointmentConfiguration());
         builder.ApplyConfiguration(new ProvidedServiceConfiguration());
         builder.ApplyConfiguration(new AdminConfiguration());
         builder.ApplyConfiguration(new WorkingMasterConfiguration());
         builder.ApplyConfiguration(new MasterServiceConfiguration());
+        builder.ApplyConfiguration(new SalaryConfiguration());
     }
 }
