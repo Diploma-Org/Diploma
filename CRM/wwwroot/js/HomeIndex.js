@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.IsPaid ? "checked" : ""}>
+                        <input class="form-check-input" type="checkbox" name="IsPaid" value="${appointmentData?.IsPaid}"}>
                         <label class="form-check-label">Paid</label>
                     </div>
                 </div>

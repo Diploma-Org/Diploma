@@ -72,9 +72,6 @@ public class SalaryService : ISalaryService
         if (Withdrawal <= 0)
             throw new ArgumentException("Withdrawal must be greater than 0.");
 
-        if (salary.Earnings - Withdrawal < 0)
-            throw new InvalidOperationException("Cannot withdraw more than the current earnings.");
-
         salary.Earnings -= Withdrawal;
         _salariesRepository.Update(salary);
         _salariesRepository.Save();

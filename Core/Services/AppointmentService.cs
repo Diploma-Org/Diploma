@@ -25,7 +25,8 @@ public class AppointmentService : IAppointmentService
             StartTime = appointment.Date.Add(DateTime.ParseExact(appointment.StartTime, "HH:mm", null).TimeOfDay),
             EndTime = appointment.Date.Add(DateTime.ParseExact(appointment.EndTime, "HH:mm", null).TimeOfDay),
             VisitorName = appointment.ClientName,
-            VisitorPhone = appointment.ClientPhone
+            VisitorPhone = appointment.ClientPhone,
+            IsPaid = appointment.IsPaid
         };
         _appointmentRepository.Insert(Appointment);
         _appointmentRepository.Save();
