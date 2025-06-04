@@ -38,8 +38,6 @@ public class HomeController : Controller
             Appointments = appointmentAllData,
             SelectedDate = selectedDate
         };
-
-
         return View(model);
     }
     public IActionResult BookAnAppointment(AppointmentBookingDto model)
@@ -57,12 +55,12 @@ public class HomeController : Controller
         _appointmentService.DeleteAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });
     }
-
-
-    public IActionResult Privacy()
+    public IActionResult ChangeStatus(int id, bool IsPaid, DateTime date)
     {
-        return View();
+        _homeService.ChangeStatus(id, IsPaid);
+        return RedirectToAction("Index", date);
     }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

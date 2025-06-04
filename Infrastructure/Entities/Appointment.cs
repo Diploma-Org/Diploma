@@ -12,4 +12,5 @@ public class Appointment : IEntity
     public int IdProvidedService { get; set; }
     public string? VisitorName { get; set; }
     public string? VisitorPhone { get; set; }
+    public bool IsPaid { get; set; }
 }

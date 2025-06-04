@@ -10,5 +10,6 @@ namespace BusinessLogic.DTOs
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }
         public DateTime Date { get; set; }
+        public bool IsPaid { get; set; }
     }
 }

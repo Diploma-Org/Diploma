@@ -14,6 +14,7 @@ namespace DataAccess.Entities
             VisitorPhone = appointment.VisitorPhone;
             IdMaster = appointment.IdMaster;
             ServiceName = serviceName;
+            IsPaid = appointment.IsPaid;
         }
     }
 }

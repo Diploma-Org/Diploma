@@ -122,10 +122,10 @@
                                     var slotCount = (int)Math.Ceiling(duration / 15.0);
                                     
                                     <td rowspan="@slotCount" class="appointment-cell" style="min-width: 120px; height: 25px; padding: 2px 8px;">
-                                        <div class="appointment-slot" style="white-space: normal;">
+                                        <div class="appointment-slot" style="white-space: normal; @if(appointment.IsPaid) { <text>background-color: #d4edda;</text> } else { <text>background-color: #f8d7da;</text> }">
                                             <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
                                             <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
-                                             <div class="appointment-actions" style="margin-top: 5px;">
+                                            <div class="appointment-actions" style="margin-top: 5px;">
                                                 <button class="btn btn-sm btn-primary edit-appointment"
                                                         data-appointment='@Html.Raw(Json.Serialize(appointment))'>
                                                     Edit

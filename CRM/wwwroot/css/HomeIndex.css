@@ -1,73 +1,115 @@
+/* --- Main Container --- */
 .schedule-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
 }
 
+/* --- Appointments Table Section --- */
+.appointments-table-container {
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+    height: 80vh;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- Table Layout --- */
 .table {
-    width: auto;
-    min-width: 100%;
+    width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
+    overflow: hidden;
 }
 
-.table th, .table td {
+.table th,
+.table td {
     border: 1px solid #dee2e6;
     text-align: center;
+    padding: 4px 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table th {
     background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
+.table td:first-child,
+.table th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background: white;
+}
+
+/* --- Appointment Cells --- */
 .appointment-cell {
     background-color: #d4edda;
     vertical-align: middle;
-    max-width: 100px;
+    word-break: break-word;
+    white-space: normal;
+    overflow: hidden;
+    padding: 4px 6px;
 }
 
+/* Appointment content inside cell */
 .appointment-slot {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 100%;
+    font-size: 0.85em;
     white-space: normal;
     word-break: break-word;
 }
-.appointments-table-container {
-    position: relative;
+
+/* --- Time Slot Checkbox --- */
+td:has(.time-slot-checkbox) {
+    padding: 0;
 }
 
 .time-slot-checkbox {
-    display: block;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .time-slot-input {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     margin: 0;
-}
-
-.time-slot-input {
-    position: absolute;
     opacity: 0;
     cursor: pointer;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    left: 0;
-    top: 0;
-}
+    z-index: 1;
+  }
 
-.checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .checkmark {
     width: 100%;
     height: 100%;
     background-color: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    box-sizing: border-box;
+  }
 
 .time-slot-input:checked ~ .checkmark {
     background-color: #28a745;
@@ -76,12 +118,18 @@
 
 .time-slot-input:checked ~ .checkmark::after {
     content: "✓";
-    color: white;
+    font-weight: bold;
 }
 
+.time-slot-checkbox:hover .checkmark {
+    background-color: #e2e6ea;
+}
 
+/* --- Booking Form Modal --- */
 .booking-form-container {
-    position: absolute;  /* Changed from fixed to absolute */
+    position: absolute;
+    top: 100px;
+    left: 100px;
     background-color: white;
     padding: 20px;
     border: 1px solid #ddd;
@@ -89,10 +137,10 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
     width: 400px;
-    max-width: 90vw;  /* Use viewport width for better responsiveness */
+    max-width: 90vw;
     max-height: 90vh;
     overflow-y: auto;
-    transition: top 0.2s, left 0.2s;  /* Smooth movement when repositioning */
+    transition: top 0.2s, left 0.2s;
 }
 
 .booking-form-container h4 {
@@ -100,6 +148,7 @@
     margin-bottom: 15px;
 }
 
+/* --- Form Controls --- */
 .form-group {
     margin-bottom: 15px;
 }
@@ -109,13 +158,22 @@
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
+/* --- Button Styling --- */
 .btn {
-    padding: 8px 15px;
+    padding: 6px 12px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    box-sizing: border-box;
+    font-size: 0.9em;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
 }
 
 .btn-secondary {
@@ -123,7 +181,12 @@
     color: white;
 }
 
-.btn-primary {
-    background-color: #007bff;
+.btn-danger {
+    background-color: #dc3545;
     color: white;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 0.8em;
 }

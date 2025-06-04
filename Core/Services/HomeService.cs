@@ -59,5 +59,19 @@ public class HomeService : IHomeService
 
         return appoinmentAllDatas;
     }
-    
+
+    public void ChangeStatus(int id, bool status)
+    {
+        var appointment = _appointmentRepository.GetById(id);
+        if (appointment != null)
+        {
+            appointment.IsPaid = status;
+            _appointmentRepository.Update(appointment);
+            _appointmentRepository.Save();
+        }
+        else
+        {
+            throw new ArgumentException("Appointment not found");
+        }
+    }
 }
