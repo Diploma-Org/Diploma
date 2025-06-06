@@ -7,16 +7,18 @@ public class SalaryService : ISalaryService
 {
     private readonly IRepository<Master> _mastersRepository;
     private readonly IRepository<Salary> _salariesRepository;
+    private readonly IRepository<DailyWage> _dailyWagesRepository;
 
-    public SalaryService(
-        IRepository<Master> mastersRepository,
-        IRepository<Salary> salariesRepository)
+    public SalaryService(IRepository<Master> mastersRepository,
+                         IRepository<Salary> salariesRepository,
+                         IRepository<DailyWage> dailyWagesRepository)
     {
         _mastersRepository = mastersRepository;
         _salariesRepository = salariesRepository;
+        _dailyWagesRepository = dailyWagesRepository;
     }
 
-    public void AddSalary(int masterId, decimal earnings)
+    public void AddSalary(int masterId, float earnings)
     {
         var master = _mastersRepository.GetById(masterId);
         if (master == null)
@@ -46,22 +48,79 @@ public class SalaryService : ISalaryService
         _salariesRepository.Save();
     }
 
-    public void IncreaseWage(int masterId, decimal newEarnings)
+    public void IncreaseWage(Master master, Salary salary, ProvidedService providedService, DateTime date)
     {
-        var salary = _salariesRepository.GetAll()
-            .FirstOrDefault(s => s.IdMaster == masterId);
+        if (salary == null || providedService == null || master == null)
+            throw new InvalidDataException("Problen during IncreasingWage.");
+        else
+        {
+            float mult = master.WagePercent / 100;
+            salary.Earnings += providedService.Price * mult;
+            _salariesRepository.Update(salary);
+            _salariesRepository.Save();
 
-        if (salary == null)
-            throw new ArgumentNullException($"Salary with ID {masterId} not found.");
-
-        if (newEarnings <= 0)
-            throw new ArgumentException("New earnings must be greater than 0.");
-
-        salary.Earnings += newEarnings;
-        _salariesRepository.Update(salary);
-        _salariesRepository.Save();
+            if (!_dailyWagesRepository.GetAll().Any(dw => dw.Date.Date == date.Date))
+            {
+                mult = (100 - master.WagePercent) / 100;
+                var dailyWage = new DailyWage
+                {
+                    Date = date,
+                    Wage = providedService.Price * mult
+                };
+                _dailyWagesRepository.Insert(dailyWage);
+                _dailyWagesRepository.Save();
+            }
+            else
+            {
+                mult = (100 - master.WagePercent) / 100;
+                var dailyWage = _dailyWagesRepository.GetAll()
+                    .FirstOrDefault(dw => dw.Date.Date == date.Date);
+                if (dailyWage != null)
+                {
+                    dailyWage.Wage += providedService.Price * mult;
+                    _dailyWagesRepository.Update(dailyWage);
+                    _dailyWagesRepository.Save();
+                }
+            }
+            
+        }
     }
-    public void DecreaseWage(int masterId, decimal Withdrawal)
+    public void DecreaseWage(Master master, Salary salary, ProvidedService providedService, DateTime date)
+    {
+        if (salary == null || providedService == null || master == null)
+            throw new InvalidDataException("Problen during DecreasingWage.");
+        else
+        {
+            float mult = master.WagePercent / 100;
+            salary.Earnings -= providedService.Price * mult;
+            _salariesRepository.Update(salary);
+            _salariesRepository.Save();
+            if (!_dailyWagesRepository.GetAll().Any(dw => dw.Date.Date == date.Date))
+            {
+                mult = (100 - master.WagePercent) / 100;
+                var dailyWage = new DailyWage
+                {
+                    Date = date,
+                    Wage = -providedService.Price * mult
+                };
+                _dailyWagesRepository.Insert(dailyWage);
+                _dailyWagesRepository.Save();
+            }
+            else
+            {
+                mult = (100 - master.WagePercent) / 100;
+                var dailyWage = _dailyWagesRepository.GetAll()
+                    .FirstOrDefault(dw => dw.Date.Date == date.Date);
+                if (dailyWage != null)
+                {
+                    dailyWage.Wage -= providedService.Price * mult;
+                    _dailyWagesRepository.Update(dailyWage);
+                    _dailyWagesRepository.Save();
+                }
+            }
+        }
+    }
+    public void DecreaseWage(int masterId, float Withdrawal)
     {
         var salary = _salariesRepository.GetAll()
             .FirstOrDefault(s => s.IdMaster == masterId);
@@ -90,5 +149,13 @@ public class SalaryService : ISalaryService
             }
         }
         return salaries;
+    }
+    public DailyWage GetDailyWage(DateTime date)
+    {
+        var dailyWage = _dailyWagesRepository.GetAll()
+            .FirstOrDefault(dw => dw.Date.Date == date.Date);
+        if (dailyWage == null)
+            throw new KeyNotFoundException($"Daily wage for date {date.ToShortDateString()} not found.");
+        return dailyWage;
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-namespace DataAccess.Entities.Configurations;
+using DataAccess.Entities;
+namespace DataAccess.Configurations;
 
 public class MasterServiceConfiguration : IEntityTypeConfiguration<MasterService>
 {

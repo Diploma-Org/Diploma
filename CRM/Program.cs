@@ -23,11 +23,11 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddRepository();
 
-builder.Services.AddScoped<IHomeService, HomeService>();
-builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-builder.Services.AddScoped<IMasterServicesService, MasterServicesService>();
-builder.Services.AddScoped<IMastersService, MastersService>();
-builder.Services.AddScoped<ISalaryService, SalaryService>();
+builder.Services.AddTransient<IHomeService, HomeService>();
+builder.Services.AddTransient<IAppointmentService, AppointmentService>();
+builder.Services.AddTransient<IMasterServicesService, MasterServicesService>();
+builder.Services.AddTransient<IMastersService, MastersService>();
+builder.Services.AddTransient<ISalaryService, SalaryService>();
 
 builder.Services.AddValidators();
 

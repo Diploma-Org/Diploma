@@ -10,12 +10,13 @@ public class HomeService : IHomeService
     private readonly IRepository<Master> _masterRepository;
     private readonly IRepository<ProvidedService> _providedServiceRepository;
     private readonly IRepository<WorkingMaster> _workingMasterRepository;
-    
 
-    public HomeService(IRepository<Appointment> appointmentRepository, 
-        IRepository<Master> masterRepository, 
+
+    public HomeService(IRepository<Appointment> appointmentRepository,
+        IRepository<Master> masterRepository,
         IRepository<ProvidedService> providedServiceRepository,
-        IRepository<WorkingMaster> workingMasterRepository)
+        IRepository<WorkingMaster> workingMasterRepository,
+        IRepository<Salary> salaryRepository)
     {
         _appointmentRepository = appointmentRepository;
         _masterRepository = masterRepository;
@@ -26,6 +27,10 @@ public class HomeService : IHomeService
     public IEnumerable<Appointment> GetAppoinments()
     {
         return _appointmentRepository.GetAll();
+    }
+    public Appointment GetAppoinmentById(int id)
+    {
+        return _appointmentRepository.GetById(id) ?? throw new KeyNotFoundException($"Appointment with ID {id} not found.");
     }
     public IEnumerable<Master> GetMasters()
     {
@@ -58,20 +63,5 @@ public class HomeService : IHomeService
             .ToList();
 
         return appoinmentAllDatas;
-    }
-
-    public void ChangeStatus(int id, bool status)
-    {
-        var appointment = _appointmentRepository.GetById(id);
-        if (appointment != null)
-        {
-            appointment.IsPaid = status;
-            _appointmentRepository.Update(appointment);
-            _appointmentRepository.Save();
-        }
-        else
-        {
-            throw new ArgumentException("Appointment not found");
-        }
     }
 }

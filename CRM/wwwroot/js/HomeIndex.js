@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const servicesOptions = services.map(service =>
             `<option value="${service.id}" ${service.id == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
         ).join('');
-    
         const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
     
         bookingForm.innerHTML = `
@@ -131,18 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <label>Phone number:</label>
                     <input type="tel" name="clientPhone" required value="${clientPhone}">
                 </div>
-    
-                <div class="form-group">
-                    <label>Additional comments:</label>
-                    <textarea name="comment">${comment}</textarea>
-                </div>
                 <div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="IsPaid" value="${appointmentData?.IsPaid}"}>
+                        <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.isPaid ? 'checked' : ''}>
+                        <input type="hidden" name="IsPaidCopy" value="${appointmentData?.isPaid ? 'true' : 'false'}">
                         <label class="form-check-label">Paid</label>
                     </div>
                 </div>
-    
                 <div style="display:flex; justify-content: space-between;">
                     <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
                     <button type="submit" class="btn btn-primary">${appointmentData ? "Save Changes" : "Book"}</button>

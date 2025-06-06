@@ -11,5 +11,6 @@ namespace BusinessLogic.DTOs
         public string? EndTime { get; set; }
         public DateTime Date { get; set; }
         public bool IsPaid { get; set; }
+        public bool IsPaidCopy { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
-using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.ViewModels;
 
@@ -104,7 +102,7 @@ namespace WebApp.Controllers
             }
             return RedirectToAction("DisplayMasterServices", new {IdMaster, errorMessage });
         }
-        public IActionResult AddService(string ServiceName, decimal Price)
+        public IActionResult AddService(string ServiceName, float Price)
         {
             string? errorMessage = null;
             try

@@ -1,6 +1,4 @@
-using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
-using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.ViewModels;
 
@@ -24,11 +22,10 @@ namespace WebApp.Controllers
                 _mastersService.GetMasters());
             return View(model);
         }
-        public IActionResult DecreaseWage(int MasterId, decimal Withdrawal)
+        public IActionResult DecreaseWage(int MasterId, float Withdrawal)
         {
             _salaryService.DecreaseWage(MasterId, Withdrawal);
             return RedirectToAction("Index");
         }
-        
     }
 }

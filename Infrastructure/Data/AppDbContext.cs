@@ -1,7 +1,7 @@
 using DataAccess.Entities;
-using DataAccess.Entities.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Configurations;
 namespace DataAccess.Data;
 
 public class AppDbContext : IdentityDbContext
@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext
     public DbSet<WorkingMaster> WorkingMasters { get; set; }
     public DbSet<MasterService> MasterServices { get; set; }
     public DbSet<Salary> Salaries { get; set; }
+    public DbSet<DailyWage> DailyWages { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -27,5 +28,6 @@ public class AppDbContext : IdentityDbContext
         builder.ApplyConfiguration(new WorkingMasterConfiguration());
         builder.ApplyConfiguration(new MasterServiceConfiguration());
         builder.ApplyConfiguration(new SalaryConfiguration());
+        builder.ApplyConfiguration(new DailyWageConfiguration());
     }
 }

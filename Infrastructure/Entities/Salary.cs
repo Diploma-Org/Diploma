@@ -7,5 +7,5 @@ public class Salary : IEntity
     [Column("IdSalary")]
     public int Id { get; set; }
     public required int IdMaster { get; set; }
-    public required decimal Earnings { get; set; }
+    public required float Earnings { get; set; }
 }

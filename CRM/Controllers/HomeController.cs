@@ -50,15 +50,11 @@ public class HomeController : Controller
         _appointmentService.EditAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });
     }
+
     public IActionResult DeleteAppointment(AppointmentBookingDto model)
     {
         _appointmentService.DeleteAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });
-    }
-    public IActionResult ChangeStatus(int id, bool IsPaid, DateTime date)
-    {
-        _homeService.ChangeStatus(id, IsPaid);
-        return RedirectToAction("Index", date);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
