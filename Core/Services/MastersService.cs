@@ -43,7 +43,7 @@ public class MastersService : IMastersService
 
         if (_workingMastersRepository.GetAll().Any(wm => wm.IdMaster == masterId && wm.Date == date))
             throw new InvalidOperationException("This master is already assigned to this date.");
-        
+
         _workingMastersRepository.Insert(workingMaster);
         _workingMastersRepository.Save();
     }
@@ -85,5 +85,13 @@ public class MastersService : IMastersService
             throw new InvalidOperationException("This master already exists.");
         _mastersRepository.Insert(master);
         _mastersRepository.Save();
+    }
+
+    public Master GetMasterById(int masterId)
+    {
+        var master = _mastersRepository.GetById(masterId);
+        if (master == null)
+            throw new ArgumentNullException($"Master with ID {masterId} not found.");
+        return master;
     }
 }

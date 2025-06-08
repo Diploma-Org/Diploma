@@ -15,8 +15,7 @@ public class HomeService : IHomeService
     public HomeService(IRepository<Appointment> appointmentRepository,
         IRepository<Master> masterRepository,
         IRepository<ProvidedService> providedServiceRepository,
-        IRepository<WorkingMaster> workingMasterRepository,
-        IRepository<Salary> salaryRepository)
+        IRepository<WorkingMaster> workingMasterRepository)
     {
         _appointmentRepository = appointmentRepository;
         _masterRepository = masterRepository;

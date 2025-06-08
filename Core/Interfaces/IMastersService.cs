@@ -4,6 +4,7 @@ namespace BusinessLogic.Interfaces;
 public interface IMastersService
 {
     List<Master> GetMasters();
+    Master GetMasterById(int masterId);
     List<WorkingMaster> GetWorkingMasters();
     List<WorkingMaster> GetMastersByDate(DateTime date);
     void AddWorkingMaster(int masterId, DateTime date);

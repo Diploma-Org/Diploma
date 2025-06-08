@@ -155,7 +155,15 @@ public class SalaryService : ISalaryService
         var dailyWage = _dailyWagesRepository.GetAll()
             .FirstOrDefault(dw => dw.Date.Date == date.Date);
         if (dailyWage == null)
-            throw new KeyNotFoundException($"Daily wage for date {date.ToShortDateString()} not found.");
+        {
+            dailyWage = new DailyWage
+            {
+                Date = date,
+                Wage = 0
+            };
+            _dailyWagesRepository.Insert(dailyWage);
+            _dailyWagesRepository.Save();
+        }
         return dailyWage;
     }
 }
