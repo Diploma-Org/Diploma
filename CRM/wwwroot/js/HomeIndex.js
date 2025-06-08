@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = bookingForm.querySelector('#appointmentForm');
         form.querySelector('input[name="StartTime"]').value = times.startTime;
         form.querySelector('input[name="EndTime"]').value = times.endTime;
-        form.querySelector('select[name="MasterId"]').value = selectedMasterId;
         positionBookingForm();
     }
 
@@ -97,14 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedServiceId = appointmentData?.idProvidedService || "";
         selectedMasterId = appointmentData?.idMaster || selectedMasterId;
     
-        const mastersOptions = masters.map(master =>
-            `<option value="${master.id}" ${master.id == selectedMasterId ? 'selected' : ''}>${master.name}</option>`
-        ).join('');
-    
         const servicesOptions = services.map(service =>
             `<option value="${service.id}" ${service.id == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
         ).join('');
-    
         const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
     
         bookingForm.innerHTML = `
@@ -118,8 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${appointmentData ? `<input type="hidden" name="Id" value="${appointmentData.id}">` : ''}
     
                 <div class="form-group">
-                    <label>Master:</label>
-                    <select name="MasterId" required>${mastersOptions}</select>
+                    <label>Master: ${masters.find(master => master.id == selectedMasterId)?.name}</label>
+                    <input type="hidden" name="MasterId" value="${selectedMasterId}">
                 </div>
     
                 <div class="form-group">
@@ -136,12 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <label>Phone number:</label>
                     <input type="tel" name="clientPhone" required value="${clientPhone}">
                 </div>
-    
-                <div class="form-group">
-                    <label>Additional comments:</label>
-                    <textarea name="comment">${comment}</textarea>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.isPaid ? 'checked' : ''}>
+                        <input type="hidden" name="IsPaidCopy" value="${appointmentData?.isPaid ? 'true' : 'false'}">
+                        <label class="form-check-label">Paid</label>
+                    </div>
                 </div>
-    
                 <div style="display:flex; justify-content: space-between;">
                     <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
                     <button type="submit" class="btn btn-primary">${appointmentData ? "Save Changes" : "Book"}</button>

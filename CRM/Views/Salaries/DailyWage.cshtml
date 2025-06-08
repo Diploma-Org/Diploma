@@ -1,0 +1,106 @@
+@model WebApp.ViewModels.DailyWageViewModel
+
+<div class="d-flex" style="gap: 20px; align-items: flex-start;">
+    <link rel="stylesheet" href="~/css/Calendar.css">
+    <script src="~/js/Calendar.js"></script>
+    <div class="calendar-section" style="flex: 0 0 250px;">
+        @{
+            var monthsToShow = new[] { 
+                DateTime.Today.AddMonths(-1), 
+                DateTime.Today, 
+                DateTime.Today.AddMonths(1) 
+            };
+        }
+
+        @if(ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
+
+        @foreach (var month in monthsToShow)
+        {
+            <div class="month-calendar mb-3">
+                <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
+
+                <div class="weekdays-header d-flex justify-content-between mb-1">
+                    <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
+                    <div>Пт</div><div>Сб</div><div>Нд</div>
+                </div>
+
+                <div class="days-grid d-flex flex-wrap" style="gap: 2px;">
+                    @{
+                        var firstDay = new DateTime(month.Year, month.Month, 1);
+                        var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
+                        var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
+                    }
+
+                    @for (int i = 0; i < startOffset; i++)
+                    {
+                        <div class="empty-day" style="width: 32px; height: 32px;"></div>
+                    }
+
+                    @for (int day = 1; day <= daysInMonth; day++)
+                    {
+                        var date = new DateTime(month.Year, month.Month, day);
+                        var isSelected = ViewBag.SelectedDate != null && date.Date == ((DateTime)ViewBag.SelectedDate).Date;
+
+                        <div class="day @(isSelected ? "selected bg-primary text-white rounded" : "")"
+                             data-date="@date.ToString("yyyy-MM-dd")"
+                             style="width: 32px; height: 32px; text-align: center; line-height: 32px; cursor: pointer;">
+                            @day
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- ОСНОВНА ЧАСТИНА -->
+    <div class="flex-grow-1">
+        <!-- Сума за день -->
+        <h2>Загальний дохід за день: <strong>@Model.DailyWage.Wage грн</strong></h2>
+
+        <!-- Заробіток майстрів -->
+        <h4 class="mt-4">Заробіток майстрів</h4>
+        <ul>
+            @foreach (var master in Model.Masters)
+            {
+                var earnings = Model.AppointmentsWithWages
+                    .Where(a => a.MasterName == master.Name)
+                    .Sum(a => a.AppointmentMasterWage);
+
+                <li><strong>@master.Name</strong>: @earnings грн</li>
+            }
+        </ul>
+
+        <!-- Таблиця записів -->
+        <h4 class="mt-5">Записи на обрану дату</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Час</th>
+                    <th>Майстер</th>
+                    <th>Послуга</th>
+                    <th>Клієнт</th>
+                    <th>Майстру</th>
+                    <th>Салону</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.AppointmentsWithWages.OrderBy(a => a.AppointmentTime))
+                {
+                    <tr>
+                        <td>@app.AppointmentTime.ToString("HH:mm")</td>
+                        <td>@app.MasterName</td>
+                        <td>@app.ServiceName</td>
+                        <td>@app.ClientName</td>
+                        <td>@app.AppointmentMasterWage грн</td>
+                        <td>@app.AppointmentSalonWage грн</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

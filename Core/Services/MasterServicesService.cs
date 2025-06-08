@@ -86,7 +86,7 @@ public class MasterServicesService : IMasterServicesService
         _masterServicesRepository.Save();
     }
 
-    public void AddService(string name, decimal price)
+    public void AddService(string name, float price)
     {
         var service = new ProvidedService
         {

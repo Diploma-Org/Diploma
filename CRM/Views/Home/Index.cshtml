@@ -1,14 +1,13 @@
 @model WebApp.ViewModels.HomeIndexViewModel
 
 @{
-    ViewData["Title"] = "Расписание";
+    ViewData["Title"] = "Розклад";
     var selectedDate = Model.SelectedDate;
     var isSunday = selectedDate.DayOfWeek == DayOfWeek.Sunday;
     var workDayStart = isSunday ? 10 : 9;
     var workDayEnd = isSunday ? 16 : 19;
     var timeSlots = new List<string>();
     
-    // Generate 15-minute intervals
     for (int hour = workDayStart; hour < workDayEnd; hour++)
     {
         for (int minute = 0; minute < 60; minute += 15)
@@ -23,7 +22,6 @@
 <script src="~/js/Calendar.js"></script>
 
 <div class="schedule-container">
-    <!-- Calendar Section -->
     <div class="calendar-section" style="flex: 0 0 250px;">
         @{
             var monthsToShow = new[] { 
@@ -74,7 +72,6 @@
         }
     </div>
     
-    <!-- Appointments Table Section -->
     <div class="appointments-table-container" style="flex: 1; position: relative; overflow: auto; height: 80vh;">
         <div class="appointments-table-wrapper">
             <table class="table">
@@ -122,10 +119,10 @@
                                     var slotCount = (int)Math.Ceiling(duration / 15.0);
                                     
                                     <td rowspan="@slotCount" class="appointment-cell" style="min-width: 120px; height: 25px; padding: 2px 8px;">
-                                        <div class="appointment-slot" style="white-space: normal;">
+                                        <div class="appointment-slot" style="white-space: normal; @if(appointment.IsPaid) { <text>background-color: #d4edda;</text> } else { <text>background-color: #f8d7da;</text> }">
                                             <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
                                             <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
-                                             <div class="appointment-actions" style="margin-top: 5px;">
+                                            <div class="appointment-actions" style="margin-top: 5px;">
                                                 <button class="btn btn-sm btn-primary edit-appointment"
                                                         data-appointment='@Html.Raw(Json.Serialize(appointment))'>
                                                     Edit

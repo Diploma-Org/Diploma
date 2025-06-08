@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using DataAccess.Entities;
 namespace DataAccess.Configurations;
 
-public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
+public class SalaryConfiguration : IEntityTypeConfiguration<Salary>
 {
-    public void Configure(EntityTypeBuilder<Appointment> builder)
+    public void Configure(EntityTypeBuilder<Salary> builder)
     {
         builder
             .HasKey(x => x.Id);
     }
+
 }

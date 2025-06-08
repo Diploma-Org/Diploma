@@ -1,0 +1,30 @@
+@model WebApp.ViewModels.SalaryIndexViewModel
+
+<h2>Salaries</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Master</th>
+            <th>Salary</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var salary in Model.Salaries)
+        {
+            <tr>
+                <td>@Model.Masters.First(m => m.Id == salary.IdMaster).Name</td>
+                <td>@salary.Earnings</td>
+                <td>
+                    <form asp-action="DecreaseWage" method="post">
+                        <input type="hidden" name="MasterId" value="@Model.Masters.First(m => m.Id == salary.IdMaster).Id" />
+                        <input type="number" name="Withdrawal" value="0" />
+                        <button type="submit" class="btn btn-sm btn-danger">Give</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
