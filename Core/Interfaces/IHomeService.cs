@@ -8,5 +8,6 @@ public interface IHomeService
     IEnumerable<Master> GetCurrentMasters(DateTime date);
     IEnumerable<ProvidedService> GetProvidedServices();
     IEnumerable<AppointmentAllData>? GetAppoinmentsByDate(DateTime date);
-    public Appointment GetAppoinmentById(int id);
+    Appointment GetAppoinmentById(int id);
+    IEnumerable<MasterService> GetMasterServices(IEnumerable<Master> masters);
 }
