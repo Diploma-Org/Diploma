@@ -34,6 +34,7 @@ public class HomeController : Controller
         var model = new HomeIndexViewModel
         {
             Masters = _homeService.GetCurrentMasters(selectedDate),
+            MasterServices = _homeService.GetMasterServices(_homeService.GetCurrentMasters(selectedDate)),
             ProvidedServices = _homeService.GetProvidedServices(),
             Appointments = appointmentAllData,
             SelectedDate = selectedDate

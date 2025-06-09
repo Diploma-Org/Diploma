@@ -92,13 +92,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
         const clientName = appointmentData?.visitorName || "";
         const clientPhone = appointmentData?.visitorPhone || "";
-        const comment = appointmentData?.Comment || "";
         const selectedServiceId = appointmentData?.idProvidedService || "";
         selectedMasterId = appointmentData?.idMaster || selectedMasterId;
     
-        const servicesOptions = services.map(service =>
-            `<option value="${service.id}" ${service.id == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
-        ).join('');
+        const masterServices = JSON.parse(appData.dataset.masterservices);
+        const mastersServices = masterServices.filter(ms => ms.idMaster == selectedMasterId);
+        const servicesOptions = mastersServices.map(ms => {
+            const service = services.find(s => s.id == ms.idProvidedService);
+                return service
+                    ? `<option value="${ms.idProvidedService}" ${ms.idProvidedService == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
+                    : '';
+            }).join('');
+        
         const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
     
         bookingForm.innerHTML = `

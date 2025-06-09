@@ -102,19 +102,6 @@ namespace WebApp.Controllers
             }
             return RedirectToAction("DisplayMasterServices", new {IdMaster, errorMessage });
         }
-        public IActionResult AddService(string ServiceName, float Price)
-        {
-            string? errorMessage = null;
-            try
-            {
-                _masterServicesService.AddService(ServiceName, Price);
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-            }
-            return RedirectToAction("DisplayMasterServices", new { errorMessage });
-        }
         public IActionResult DeleteService(int IdMaster, int IdService)
         {
             string? errorMessage = null;

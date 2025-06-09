@@ -34,18 +34,18 @@ public class MasterServicesService : IMasterServicesService
         if (masterId == null)
             masterId = _masterRepository.GetAll().FirstOrDefault()?.Id;
         var masterIdNN = (int)masterId;
-        
-        
+
+
         var masterServices = GetMasterServices(masterIdNN);
 
         var servicesToDisplay = masterServices.Select(masterService => new MasterServiceDto
         {
-            Id= masterService.Id,
+            Id = masterService.Id,
             ServiceName = _providedServicesRepository.GetById(masterService.IdProvidedService)?.ServiceName ?? "Unknown Service",
             Price = _providedServicesRepository.GetById(masterService.IdProvidedService)?.Price ?? 0,
         }).ToList();
 
-        if (servicesToDisplay == null )
+        if (servicesToDisplay == null)
             throw new ArgumentNullException($"Master services with ID {masterIdNN} not found.");
 
         var master = _masterRepository.GetById(masterIdNN);
@@ -63,14 +63,14 @@ public class MasterServicesService : IMasterServicesService
             };
             masterServicesDto.Add(masterService);
         }
-            
+
         var masterServicesAndMasterDto = new MasterServicesAndMasterDto
         {
             MasterServices = masterServicesDto,
             Master = master,
             ProvidedServices = _providedServicesRepository.GetAll().ToList()
-        }; 
-        return masterServicesAndMasterDto; 
+        };
+        return masterServicesAndMasterDto;
     }
     public void AddMasterServiceFromList(int idMaster, int idProvidedService)
     {
@@ -86,25 +86,12 @@ public class MasterServicesService : IMasterServicesService
         _masterServicesRepository.Save();
     }
 
-    public void AddService(string name, float price)
-    {
-        var service = new ProvidedService
-        {
-            ServiceName = name,
-            Price = price
-        };
-        if (_providedServicesRepository.GetAll().Any(a => a.ServiceName == name))
-            throw new ArgumentException($"Service with name {name} already exists.");
-        _providedServicesRepository.Insert(service);
-        _providedServicesRepository.Save();
-    }
-
     public void DeleteService(int idMaster, int idService)
     {
-        var masterService = _masterServicesRepository.GetById(idMaster);
+        var masterService = _masterServicesRepository.GetById(idService);
         if (masterService == null)
             throw new ArgumentNullException($"Master service with ID {idMaster} not found.");
-        _masterRepository.Delete(masterService.Id);
-        _masterRepository.Save();
+        _masterServicesRepository.Delete(masterService.Id);
+        _masterServicesRepository.Save();
     }
 }

@@ -10,17 +10,20 @@ public class HomeService : IHomeService
     private readonly IRepository<Master> _masterRepository;
     private readonly IRepository<ProvidedService> _providedServiceRepository;
     private readonly IRepository<WorkingMaster> _workingMasterRepository;
+    private readonly IRepository<MasterService> _masterServiceRepository;
 
 
     public HomeService(IRepository<Appointment> appointmentRepository,
         IRepository<Master> masterRepository,
         IRepository<ProvidedService> providedServiceRepository,
-        IRepository<WorkingMaster> workingMasterRepository)
+        IRepository<WorkingMaster> workingMasterRepository,
+        IRepository<MasterService> masterServiceRepository)
     {
         _appointmentRepository = appointmentRepository;
         _masterRepository = masterRepository;
         _providedServiceRepository = providedServiceRepository;
         _workingMasterRepository = workingMasterRepository;
+        _masterServiceRepository = masterServiceRepository;
     }
 
     public IEnumerable<Appointment> GetAppoinments()
@@ -62,5 +65,24 @@ public class HomeService : IHomeService
             .ToList();
 
         return appoinmentAllDatas;
+    }
+
+    public IEnumerable<MasterService> GetMasterServices(IEnumerable<Master> masters)
+    {
+        var MasterServices = new List<MasterService>();
+        foreach (var master in masters)
+        {
+            var masterServices = _masterServiceRepository.GetAll()
+                .Where(wm => wm.IdMaster == master.Id)
+                .Select(wm => new MasterService
+                {
+                    Id = wm.Id,
+                    IdMaster = wm.IdMaster,
+                    IdProvidedService = wm.IdProvidedService
+
+                });
+            MasterServices = MasterServices.Concat(masterServices).ToList();
+        }
+        return MasterServices ;
     }
 }
