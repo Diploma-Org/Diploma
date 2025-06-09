@@ -3,5 +3,9 @@ namespace BusinessLogic.Interfaces;
 
 public interface IProvidedServicesService
 {
-    public ProvidedService GetProvidedServiceById(int providedServiceId);
+    ProvidedService GetProvidedServiceById(int providedServiceId);
+    IEnumerable<ProvidedService> GetProvidedServices();
+    void AddProvidedService(ProvidedService providedService);
+    void UpdateProvidedService(ProvidedService providedService);
+    void DeleteProvidedService(int providedServiceId);
 }

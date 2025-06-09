@@ -69,8 +69,6 @@ public class HomeService : IHomeService
 
     public IEnumerable<MasterService> GetMasterServices(IEnumerable<Master> masters)
     {
-        if (masters == null || !masters.Any())
-            throw new ArgumentNullException("No masters provided.");
         var MasterServices = new List<MasterService>();
         foreach (var master in masters)
         {
@@ -85,6 +83,6 @@ public class HomeService : IHomeService
                 });
             MasterServices = MasterServices.Concat(masterServices).ToList();
         }
-        return MasterServices;
+        return MasterServices ;
     }
 }

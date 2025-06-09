@@ -99,8 +99,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const mastersServices = masterServices.filter(ms => ms.idMaster == selectedMasterId);
         const servicesOptions = mastersServices.map(ms => {
             const service = services.find(s => s.id == ms.idProvidedService);
-            return `<option value="${ms.idProvidedService}" ${ms.idProvidedService == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
-        }).join('');
+                return service
+                    ? `<option value="${ms.idProvidedService}" ${ms.idProvidedService == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
+                    : '';
+            }).join('');
+        
         const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
     
         bookingForm.innerHTML = `

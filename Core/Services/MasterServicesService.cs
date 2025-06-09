@@ -88,11 +88,10 @@ public class MasterServicesService : IMasterServicesService
 
     public void DeleteService(int idMaster, int idService)
     {
-        var masterService = _masterServicesRepository.GetById(idMaster);
+        var masterService = _masterServicesRepository.GetById(idService);
         if (masterService == null)
             throw new ArgumentNullException($"Master service with ID {idMaster} not found.");
-        _masterRepository.Delete(masterService.Id);
-        _masterRepository.Save();
+        _masterServicesRepository.Delete(masterService.Id);
+        _masterServicesRepository.Save();
     }
-    
 }

@@ -1,8 +1,8 @@
 @model WebApp.ViewModels.DailyWageViewModel
 
-<div class="d-flex" style="gap: 20px; align-items: flex-start;">
-    <link rel="stylesheet" href="~/css/Calendar.css">
-    <script src="~/js/Calendar.js"></script>
+<link rel="stylesheet" href="~/css/Calendar.css">
+<script src="~/js/Calendar.js"></script>
+<div class="dailywage-container d-flex flex-col" style=" gap: 20px;">
     <div class="calendar-section" style="flex: 0 0 250px;">
         @{
             var monthsToShow = new[] { 
@@ -11,44 +11,40 @@
                 DateTime.Today.AddMonths(1) 
             };
         }
-
         @if(ViewData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger" role="alert">
                 @ViewData["ErrorMessage"]
             </div>
         }
-
+        
         @foreach (var month in monthsToShow)
         {
-            <div class="month-calendar mb-3">
+            <div class="month-calendar">
                 <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
-
-                <div class="weekdays-header d-flex justify-content-between mb-1">
+                
+                <div class="weekdays-header">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
-                    <div>Пт</div><div>Сб</div><div>Нд</div>
+                    <div>Пт</div><div>Сб</div><div>Вс</div>
                 </div>
-
-                <div class="days-grid d-flex flex-wrap" style="gap: 2px;">
+                
+                <div class="days-grid">
                     @{
                         var firstDay = new DateTime(month.Year, month.Month, 1);
                         var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
                         var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
                     }
-
+                    
                     @for (int i = 0; i < startOffset; i++)
                     {
-                        <div class="empty-day" style="width: 32px; height: 32px;"></div>
+                        <div class="empty-day"></div>
                     }
-
+                    
                     @for (int day = 1; day <= daysInMonth; day++)
                     {
                         var date = new DateTime(month.Year, month.Month, day);
-                        var isSelected = ViewBag.SelectedDate != null && date.Date == ((DateTime)ViewBag.SelectedDate).Date;
-
-                        <div class="day @(isSelected ? "selected bg-primary text-white rounded" : "")"
-                             data-date="@date.ToString("yyyy-MM-dd")"
-                             style="width: 32px; height: 32px; text-align: center; line-height: 32px; cursor: pointer;">
+                        <div class="day @(date.Date == ViewBag.SelectedDate ? "selected" : "")"
+                             data-date="@date.ToString("yyyy-MM-dd")">
                             @day
                         </div>
                     }
@@ -57,12 +53,9 @@
         }
     </div>
 
-    <!-- ОСНОВНА ЧАСТИНА -->
     <div class="flex-grow-1">
-        <!-- Сума за день -->
         <h2>Загальний дохід за день: <strong>@Model.DailyWage.Wage грн</strong></h2>
 
-        <!-- Заробіток майстрів -->
         <h4 class="mt-4">Заробіток майстрів</h4>
         <ul>
             @foreach (var master in Model.Masters)
