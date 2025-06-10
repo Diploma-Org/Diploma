@@ -100,48 +100,59 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingForm.innerHTML = `
             <h4>${appointmentData ? "Edit" : "Booking"} Form</h4>
             <p>Chosen time: ${times.startTime} - ${times.endTime}</p>
-    
+
             <form id="appointmentForm" method="post" action="${actionUrl}">
                 <input type="hidden" name="date" value="${selectedDate}">
                 <input type="hidden" name="StartTime" value="${times.startTime}">
                 <input type="hidden" name="EndTime" value="${times.endTime}">
                 ${appointmentData ? `<input type="hidden" name="Id" value="${appointmentData.id}">` : ''}
-    
+
                 <div class="form-group">
                     <label>Master: ${masters.find(master => master.id == selectedMasterId)?.name}</label>
                     <input type="hidden" name="MasterId" value="${selectedMasterId}">
                 </div>
-    
+
                 <div class="form-group">
                     <label>Service:</label>
                     <select name="ServiceId" required>${servicesOptions}</select>
                 </div>
-    
+
+                <div class="form-group position-relative">
+                    <label>Find client (name, surname, or phone):</label>
+                    <input type="text" id="clientSearch" class="form-control" placeholder="Search clients...">
+                    <div id="clientSuggestions" class="list-group position-absolute w-100 z-3"></div>
+                </div>
+
                 <div class="form-group">
                     <label>Client name:</label>
-                    <input type="text" name="clientName" required value="${clientName}">
+                    <input type="text" id="clientName" name="clientName" class="form-control" required value="${clientName}">
                 </div>
-    
+
                 <div class="form-group">
                     <label>Phone number:</label>
-                    <input type="tel" name="clientPhone" required value="${clientPhone}">
+                    <input type="tel" id="clientPhone" name="clientPhone" class="form-control" required value="${clientPhone}">
                 </div>
-                <div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.isPaid ? 'checked' : ''}>
-                        <input type="hidden" name="IsPaidCopy" value="${appointmentData?.isPaid ? 'true' : 'false'}">
-                        <label class="form-check-label">Paid</label>
-                    </div>
+
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.isPaid ? 'checked' : ''}>
+                    <input type="hidden" name="IsPaidCopy" value="${appointmentData?.isPaid ? 'true' : 'false'}">
+                    <label class="form-check-label">Paid</label>
                 </div>
-                <div style="display:flex; justify-content: space-between;">
+
+                <div class="d-flex justify-content-between">
                     <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
                     <button type="submit" class="btn btn-primary">${appointmentData ? "Save Changes" : "Book"}</button>
                 </div>
             </form>
         `;
+
+        // Після вставки HTML — викликаємо автозаповнення
+        
+
     
         document.querySelector('.appointments-table-container').appendChild(bookingForm);
         positionBookingForm();
+        setupClientAutocomplete();
     
         scrollHandler = () => positionBookingForm();
         window.addEventListener('scroll', scrollHandler, { passive: true });
@@ -306,5 +317,48 @@ document.addEventListener('DOMContentLoaded', function() {
             createBookingForm(appointmentData);
         }
     });
+
+
+    function setupClientAutocomplete() {
+        const searchInput = document.getElementById("clientSearch");
+        const nameInput = document.getElementById("clientName");
+        const phoneInput = document.getElementById("clientPhone");
+        const suggestions = document.getElementById("clientSuggestions");
+
+        // Перевіряємо, чи елементи існують
+        if (!searchInput || !nameInput || !phoneInput) {
+            console.error("Autocomplete elements not found");
+            return;
+        }
+
+        searchInput.addEventListener("input", async () => {
+            const query = searchInput.value.trim();
+            if (query.length < 2) {
+                suggestions.innerHTML = "";
+                return;
+            }
+
+            const response = await fetch(`/Home/SearchClients?query=${encodeURIComponent(query)}`);
+            const clients = await response.json();
+
+            suggestions.innerHTML = "";
+            clients.forEach(client => {
+                const item = document.createElement("button");
+                item.type = "button";
+                item.className = "list-group-item list-group-item-action";
+                item.textContent = `${client.name} ${client.surname} (${client.phone})`;
+
+                item.addEventListener("click", () => {
+                    nameInput.value = `${client.name} ${client.surname}`;
+                    phoneInput.value = client.phone;
+                    searchInput.value = "";
+                    suggestions.innerHTML = "";
+                });
+
+                suggestions.appendChild(item);
+            });
+        });
+    }
+
     
 });

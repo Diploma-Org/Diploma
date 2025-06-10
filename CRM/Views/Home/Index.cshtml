@@ -21,6 +21,7 @@
 <script src="~/js/HomeIndex.js"></script>
 <script src="~/js/Calendar.js"></script>
 
+
 <div class="schedule-container gap-4 p-4">
     <aside class="calendar-section border rounded shadow-sm p-3 bg-white" style="width: 250px;">
         @{
@@ -183,5 +184,6 @@
      data-services='@Json.Serialize(Model.ProvidedServices)'
      data-masterServices='@Json.Serialize(Model.MasterServices)'
      data-selected-date='@selectedDate.ToString("yyyy-MM-dd")'
+     data-clients='@Json.Serialize(Model.Clients)'
      style="display: none;"></div>
 </div>
