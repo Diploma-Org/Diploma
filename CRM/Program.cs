@@ -29,6 +29,7 @@ builder.Services.AddTransient<IMasterServicesService, MasterServicesService>();
 builder.Services.AddTransient<IMastersService, MastersService>();
 builder.Services.AddTransient<ISalaryService, SalaryService>();
 builder.Services.AddTransient<IProvidedServicesService, ProvidedServicesService>();
+builder.Services.AddTransient<IClientService, ClientService>();
 
 builder.Services.AddValidators();
 

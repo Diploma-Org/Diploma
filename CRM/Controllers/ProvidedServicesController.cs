@@ -22,7 +22,7 @@ public class ProvidedServicesController : Controller
             ViewData["ErrorMessage"] = errorMessage;
         }
 
-        return View(_providedServicesService.GetProvidedServices());
+        return View(_providedServicesService.GetProvidedServices().OrderBy(s => s.ServiceName));
     }
     public IActionResult AddProvidedService(ProvidedService providedService)
     {

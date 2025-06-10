@@ -7,7 +7,8 @@ namespace WebApp.ViewModels
         public required IEnumerable<AppointmentAllData> Appointments { get; set; }
         public required IEnumerable<ProvidedService> ProvidedServices { get; set; }
         public required IEnumerable<Master> Masters { get; set; }
-        public required DateTime SelectedDate { get; set; }     
+        public required DateTime SelectedDate { get; set; }
         public required IEnumerable<MasterService> MasterServices { get; set; }
+        public required IEnumerable<Client> Clients { get; set; }
     }
 }

@@ -18,7 +18,7 @@ public class SalaryService : ISalaryService
         _dailyWagesRepository = dailyWagesRepository;
     }
 
-    public void AddSalary(int masterId, float earnings)
+    public void AddSalary(int masterId)
     {
         var master = _mastersRepository.GetById(masterId);
         if (master == null)
@@ -27,7 +27,7 @@ public class SalaryService : ISalaryService
         var salary = new Salary
         {
             IdMaster = masterId,
-            Earnings = earnings
+            Earnings = 0,
         };
 
         _salariesRepository.Insert(salary);

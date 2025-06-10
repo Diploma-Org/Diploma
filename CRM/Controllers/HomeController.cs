@@ -11,10 +11,13 @@ public class HomeController : Controller
 {
     private readonly IHomeService _homeService;
     private readonly IAppointmentService _appointmentService;
-    public HomeController(IHomeService homeService, IAppointmentService appointmentService)
+    private readonly IClientService _clientService;
+
+    public HomeController(IHomeService homeService, IAppointmentService appointmentService, IClientService clientService)
     {
         _homeService = homeService;
         _appointmentService = appointmentService;
+        _clientService = clientService;
     }
 
 
@@ -37,7 +40,8 @@ public class HomeController : Controller
             MasterServices = _homeService.GetMasterServices(_homeService.GetCurrentMasters(selectedDate)),
             ProvidedServices = _homeService.GetProvidedServices(),
             Appointments = appointmentAllData,
-            SelectedDate = selectedDate
+            SelectedDate = selectedDate,
+            Clients = _clientService.GetClients()
         };
         return View(model);
     }

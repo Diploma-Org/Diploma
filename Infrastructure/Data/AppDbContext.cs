@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext
     public DbSet<MasterService> MasterServices { get; set; }
     public DbSet<Salary> Salaries { get; set; }
     public DbSet<DailyWage> DailyWages { get; set; }
+    public DbSet<Client> Clients { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -29,5 +30,6 @@ public class AppDbContext : IdentityDbContext
         builder.ApplyConfiguration(new MasterServiceConfiguration());
         builder.ApplyConfiguration(new SalaryConfiguration());
         builder.ApplyConfiguration(new DailyWageConfiguration());
+        builder.ApplyConfiguration(new ClientConfiguration());
     }
 }

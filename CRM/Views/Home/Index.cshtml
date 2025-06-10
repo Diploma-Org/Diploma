@@ -21,48 +21,62 @@
 <script src="~/js/HomeIndex.js"></script>
 <script src="~/js/Calendar.js"></script>
 
-<div class="schedule-container">
-    <div class="calendar-section" style="flex: 0 0 250px;">
+<div class="schedule-container gap-4 p-4">
+    <aside class="calendar-section border rounded shadow-sm p-3 bg-white" style="width: 250px;">
         @{
-            var monthsToShow = new[] { 
-                DateTime.Today.AddMonths(-1), 
-                DateTime.Today, 
-                DateTime.Today.AddMonths(1) 
+            var monthOffset = 0;
+            if (int.TryParse(Context.Request.Query["monthOffset"], out var offset))
+            {
+                monthOffset = offset;
+            }
+
+            var baseMonth = DateTime.Today.AddMonths(monthOffset);
+            var monthsToShow = new[]
+            {
+                baseMonth.AddMonths(-1),
+                baseMonth,
+                baseMonth.AddMonths(1)
             };
         }
-        @if(ViewData["ErrorMessage"] != null)
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-outline-secondary btn-sm" id="prev-month">&laquo;</button>
+            <span class="fw-semibold">@baseMonth.ToString("yyyy")</span>
+            <button class="btn btn-outline-secondary btn-sm" id="next-month">&raquo;</button>
+        </div>
+
+        @if (ViewData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger" role="alert">
                 @ViewData["ErrorMessage"]
             </div>
         }
-        
+
         @foreach (var month in monthsToShow)
         {
-            <div class="month-calendar">
-                <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
-                
-                <div class="weekdays-header">
+            <div class="month-calendar mb-4">
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM")</h5>
+
+                <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
-                    <div>Пт</div><div>Сб</div><div>Вс</div>
+                    <div>Пт</div><div>Сб</div><div>Нд</div>
                 </div>
-                
-                <div class="days-grid">
+
+                <div class="days-grid d-grid grid-template-columns-7 gap-1 text-center">
                     @{
                         var firstDay = new DateTime(month.Year, month.Month, 1);
                         var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
                         var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
                     }
-                    
+
                     @for (int i = 0; i < startOffset; i++)
                     {
                         <div class="empty-day"></div>
                     }
-                    
+
                     @for (int day = 1; day <= daysInMonth; day++)
                     {
                         var date = new DateTime(month.Year, month.Month, day);
-                        <div class="day @(date.Date == selectedDate.Date ? "selected" : "")" 
+                        <div class="day btn btn-light @(date.Date == Model.SelectedDate ? "btn-primary" : "")"
                              data-date="@date.ToString("yyyy-MM-dd")">
                             @day
                         </div>
@@ -70,7 +84,7 @@
                 </div>
             </div>
         }
-    </div>
+    </aside>
     
     <div class="appointments-table-container" style="flex: 1; position: relative; overflow: auto; height: 80vh;">
         <div class="appointments-table-wrapper">
@@ -118,10 +132,10 @@
                                     var duration = appointment.EndTime.Subtract(appointment.StartTime).TotalMinutes;
                                     var slotCount = (int)Math.Ceiling(duration / 15.0);
                                     
-                                    <td rowspan="@slotCount" class="appointment-cell" style="min-width: 120px; height: 25px; padding: 2px 8px;">
-                                        <div class="appointment-slot" style="white-space: normal; @if(appointment.IsPaid) { <text>background-color: #d4edda;</text> } else { <text>background-color: #f8d7da;</text> }">
-                                            <span style="display: block;font-size: 0.9em;" title="@appointment.VisitorName">@appointment.VisitorName</span>
-                                            <span style="font-size: 0.7em;">@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
+                                    <td rowspan="@slotCount" class="appointment-cell @(appointment.IsPaid ? "" : "unpaid")" style="min-width: 120px; height: 25px; padding: 2px 8px; @if(appointment.IsPaid) { <text>background-color: #d4edda;</text> } else { <text>background-color: #f8d7da;</text> }" >
+                                        <div class="appointment-slot" style="white-space: normal;">
+                                            <span style="display: block;" title="@appointment.VisitorName">@appointment.VisitorName</span>
+                                            <span>@appointment.StartTime.ToString("HH:mm")-@appointment.EndTime.ToString("HH:mm")</span>
                                             <div class="appointment-actions" style="margin-top: 5px;">
                                                 <button class="btn btn-sm btn-primary edit-appointment"
                                                         data-appointment='@Html.Raw(Json.Serialize(appointment))'>

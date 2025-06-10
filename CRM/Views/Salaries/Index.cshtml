@@ -1,30 +1,38 @@
 @model WebApp.ViewModels.SalaryIndexViewModel
 
-<h2>Salaries</h2>
+<link rel="stylesheet" href="~/css/SalaryIndex.css" />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Master</th>
-            <th>Salary</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var salary in Model.Salaries)
-        {
-            <tr>
-                <td>@Model.Masters.First(m => m.Id == salary.IdMaster).Name</td>
-                <td>@salary.Earnings</td>
-                <td>
-                    <form asp-action="DecreaseWage" method="post">
-                        <input type="hidden" name="MasterId" value="@Model.Masters.First(m => m.Id == salary.IdMaster).Id" />
-                        <input type="number" name="Withdrawal" value="0" />
-                        <button type="submit" class="btn btn-sm btn-danger">Give</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="salary-container p-4">
+    <h2 class="mb-4 fw-bold">Зарплати майстрів</h2>
 
+    <div class="table-responsive rounded shadow-sm">
+        <table class="table table-bordered align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Майстер</th>
+                    <th>Зарплата</th>
+                    <th>Зняти</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var salary in Model.Salaries)
+                {
+                    var master = Model.Masters.First(m => m.Id == salary.IdMaster);
+                    <tr>
+                        <td class="fw-semibold">@master.Name</td>
+                        <td><span class="badge bg-success fs-6">@salary.Earnings ₴</span></td>
+                        <td>
+                            <form asp-action="DecreaseWage" method="post" class="d-flex justify-content-center align-items-center gap-2">
+                                <input type="hidden" name="MasterId" value="@master.Id" />
+                                <input type="number" name="Withdrawal" class="form-control form-control-sm w-50" value="0" min="1" required />
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    Видати
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
