@@ -52,7 +52,7 @@ namespace WebApp.Controllers
             var DailyWageViewModel = new DailyWageViewModel
             {
                 AppointmentsWithWages = AppointmentsWithWages,
-                DailyWage = _salaryService.GetDailyWage(selectedDate),
+                DailyWage = AppointmentsWithWages.Sum(a => a.AppointmentSalonWage),
                 Masters = _mastersService.GetMasters()
             };
             return View(DailyWageViewModel);

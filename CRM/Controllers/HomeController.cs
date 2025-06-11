@@ -11,10 +11,13 @@ public class HomeController : Controller
 {
     private readonly IHomeService _homeService;
     private readonly IAppointmentService _appointmentService;
-    public HomeController(IHomeService homeService, IAppointmentService appointmentService)
+    private readonly IClientService _clientService;
+
+    public HomeController(IHomeService homeService, IAppointmentService appointmentService, IClientService clientService)
     {
         _homeService = homeService;
         _appointmentService = appointmentService;
+        _clientService = clientService;
     }
 
 
@@ -37,7 +40,8 @@ public class HomeController : Controller
             MasterServices = _homeService.GetMasterServices(_homeService.GetCurrentMasters(selectedDate)),
             ProvidedServices = _homeService.GetProvidedServices(),
             Appointments = appointmentAllData,
-            SelectedDate = selectedDate
+            SelectedDate = selectedDate,
+            Clients = _clientService.GetClients()
         };
         return View(model);
     }
@@ -57,6 +61,28 @@ public class HomeController : Controller
         _appointmentService.DeleteAppointment(model);
         return RedirectToAction("Index", new { date = model.Date });
     }
+    [HttpGet]
+    public IActionResult SearchClients(string query)
+    {
+        var matches = _clientService.GetClients()
+            .Where(c =>
+                c.Name.Contains(query) ||
+                c.Surname.Contains(query) ||
+                c.PhoneNumber.Contains(query))
+            .Select(c => new
+            {
+                id = c.Id,
+                name = c.Name,
+                surname = c.Surname,
+                phone = c.PhoneNumber
+            })
+            .Take(10)
+            .ToList();
+
+        return Json(matches);
+    }
+
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

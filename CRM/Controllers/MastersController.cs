@@ -44,8 +44,8 @@ namespace WebApp.Controllers
         public IActionResult RemoveMasterFromDate(int id)
         {
             string? errorMessage = null;
-            try {_mastersService.RemoveWorkingMaster(id);}
-            catch (Exception ex){errorMessage = ex.Message;}
+            try { _mastersService.RemoveWorkingMaster(id); }
+            catch (Exception ex) { errorMessage = ex.Message; }
 
             return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
 
@@ -63,12 +63,12 @@ namespace WebApp.Controllers
             }
             return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
         }
-        public IActionResult AddMaster(string name, string surname, string phone)
+        public IActionResult AddMaster(string name, string surname, string phone, int wagePercent)
         {
             string? errorMessage = null;
             try
             {
-                _mastersService.AddMaster(name, surname, phone);
+                _mastersService.AddMaster(name, surname, phone, wagePercent);
             }
             catch (Exception ex)
             {
@@ -87,7 +87,7 @@ namespace WebApp.Controllers
             {
                 ViewData["ErrorMessage"] = ex.Message;
             }
-            return RedirectToAction("Index","Home", new { date = DateTime.Today, errorMessage = ViewData["ErrorMessage"] });
+            return RedirectToAction("Index", "Home", new { date = DateTime.Today, errorMessage = ViewData["ErrorMessage"] });
         }
         public IActionResult AddMasterServiceFromList(int IdMaster, int IdService)
         {
@@ -100,7 +100,7 @@ namespace WebApp.Controllers
             {
                 errorMessage = ex.Message;
             }
-            return RedirectToAction("DisplayMasterServices", new {IdMaster, errorMessage });
+            return RedirectToAction("DisplayMasterServices", new { IdMaster, errorMessage });
         }
         public IActionResult DeleteService(int IdMaster, int IdService)
         {
@@ -114,6 +114,19 @@ namespace WebApp.Controllers
                 errorMessage = ex.Message;
             }
             return RedirectToAction("DisplayMasterServices", new { IdMaster, errorMessage });
+        }
+        public IActionResult UpdateMaster(int id, string name, string surname, string phoneNumber, int wagePercent)
+        {
+            string? errorMessage = null;
+            try
+            {
+                _mastersService.UpdateMaster(id, name, surname, phoneNumber, wagePercent);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return RedirectToAction("Index", new { date = DateTime.Today, errorMessage });
         }
     }
 }

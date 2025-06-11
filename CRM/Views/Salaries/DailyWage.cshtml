@@ -1,49 +1,66 @@
 @model WebApp.ViewModels.DailyWageViewModel
 
-<link rel="stylesheet" href="~/css/Calendar.css">
+<link rel="stylesheet" href="~/css/Calendar.css" />
 <script src="~/js/Calendar.js"></script>
-<div class="dailywage-container d-flex flex-col" style=" gap: 20px;">
-    <div class="calendar-section" style="flex: 0 0 250px;">
+
+<div class="dailywage-container d-flex flex-row gap-4 p-4">
+
+    <!-- Секція календаря -->
+    <aside class="calendar-section border rounded shadow-sm p-3 bg-white" style="width: 250px;">
         @{
-            var monthsToShow = new[] { 
-                DateTime.Today.AddMonths(-1), 
-                DateTime.Today, 
-                DateTime.Today.AddMonths(1) 
+            var monthOffset = 0;
+            if (int.TryParse(Context.Request.Query["monthOffset"], out var offset))
+            {
+                monthOffset = offset;
+            }
+
+            var baseMonth = DateTime.Today.AddMonths(monthOffset);
+            var monthsToShow = new[]
+            {
+                baseMonth.AddMonths(-1),
+                baseMonth,
+                baseMonth.AddMonths(1)
             };
         }
-        @if(ViewData["ErrorMessage"] != null)
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-outline-secondary btn-sm" style="border-color: transparent" id="prev-month">&laquo;</button>
+            <span class="fw-semibold">@baseMonth.ToString("yyyy")</span>
+            <button class="btn btn-outline-secondary btn-sm" style="border-color: transparent" id="next-month">&raquo;</button>
+        </div>
+
+        @if (ViewData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger" role="alert">
                 @ViewData["ErrorMessage"]
             </div>
         }
-        
+
         @foreach (var month in monthsToShow)
         {
-            <div class="month-calendar">
-                <h5 class="month-title">@month.ToString("MMMM yyyy")</h5>
-                
-                <div class="weekdays-header">
+            <div class="month-calendar mb-4">
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM")</h5>
+
+                <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
-                    <div>Пт</div><div>Сб</div><div>Вс</div>
+                    <div>Пт</div><div>Сб</div><div>Нд</div>
                 </div>
-                
-                <div class="days-grid">
+
+                <div class="days-grid d-grid grid-template-columns-7 gap-1 text-center">
                     @{
                         var firstDay = new DateTime(month.Year, month.Month, 1);
                         var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
                         var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
                     }
-                    
+
                     @for (int i = 0; i < startOffset; i++)
                     {
                         <div class="empty-day"></div>
                     }
-                    
+
                     @for (int day = 1; day <= daysInMonth; day++)
                     {
                         var date = new DateTime(month.Year, month.Month, day);
-                        <div class="day @(date.Date == ViewBag.SelectedDate ? "selected" : "")"
+                        <div class="day btn btn-light @(date.Date == ViewBag.SelectedDate ? "btn-primary" : "")"
                              data-date="@date.ToString("yyyy-MM-dd")">
                             @day
                         </div>
@@ -51,49 +68,56 @@
                 </div>
             </div>
         }
-    </div>
+    </aside>
 
-    <div class="flex-grow-1">
-        <h2>Загальний дохід за день: <strong>@Model.DailyWage.Wage грн</strong></h2>
+    <!-- Основна секція -->
+    <main class="flex-grow-1">
+        <div class="bg-white border rounded shadow-sm p-4">
+            <h2 class="mb-4">Загальний дохід за день: <strong class="text-success">@Model.DailyWage грн</strong></h2>
 
-        <h4 class="mt-4">Заробіток майстрів</h4>
-        <ul>
-            @foreach (var master in Model.Masters)
-            {
-                var earnings = Model.AppointmentsWithWages
-                    .Where(a => a.MasterName == master.Name)
-                    .Sum(a => a.AppointmentMasterWage);
-
-                <li><strong>@master.Name</strong>: @earnings грн</li>
-            }
-        </ul>
-
-        <!-- Таблиця записів -->
-        <h4 class="mt-5">Записи на обрану дату</h4>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Час</th>
-                    <th>Майстер</th>
-                    <th>Послуга</th>
-                    <th>Клієнт</th>
-                    <th>Майстру</th>
-                    <th>Салону</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var app in Model.AppointmentsWithWages.OrderBy(a => a.AppointmentTime))
+            <h4 class="mt-3 mb-3 border-bottom pb-2">Заробіток майстрів</h4>
+            <ul class="list-group list-group-flush mb-4">
+                @foreach (var master in Model.Masters)
                 {
-                    <tr>
-                        <td>@app.AppointmentTime.ToString("HH:mm")</td>
-                        <td>@app.MasterName</td>
-                        <td>@app.ServiceName</td>
-                        <td>@app.ClientName</td>
-                        <td>@app.AppointmentMasterWage грн</td>
-                        <td>@app.AppointmentSalonWage грн</td>
-                    </tr>
+                    var earnings = Model.AppointmentsWithWages
+                        .Where(a => a.MasterName == master.Name)
+                        .Sum(a => a.AppointmentMasterWage);
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@master.Name</span>
+                        <span class="fw-semibold">@earnings грн</span>
+                    </li>
                 }
-            </tbody>
-        </table>
-    </div>
+            </ul>
+
+            <h4 class="mt-5 mb-3 border-bottom pb-2">Записи на обрану дату</h4>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>Час</th>
+                            <th>Майстер</th>
+                            <th>Послуга</th>
+                            <th>Клієнт</th>
+                            <th>Майстру</th>
+                            <th>Салону</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model.AppointmentsWithWages.OrderBy(a => a.AppointmentTime))
+                        {
+                            <tr>
+                                <td>@app.AppointmentTime.ToString("HH:mm")</td>
+                                <td>@app.MasterName</td>
+                                <td>@app.ServiceName</td>
+                                <td>@app.ClientName</td>
+                                <td class="text-success">@app.AppointmentMasterWage грн</td>
+                                <td class="text-secondary">@app.AppointmentSalonWage грн</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </div>

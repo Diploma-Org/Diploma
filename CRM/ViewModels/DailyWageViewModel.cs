@@ -7,6 +7,6 @@ namespace WebApp.ViewModels
     {
         public required IEnumerable<AppointmentWithWage> AppointmentsWithWages { get; set; }
         public required IEnumerable<Master> Masters { get; set; }
-        public required DailyWage DailyWage { get; set; }
+        public float DailyWage { get; set; }
     }
 }

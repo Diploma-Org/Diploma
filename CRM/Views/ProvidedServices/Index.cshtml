@@ -1,43 +1,44 @@
 @model IEnumerable<DataAccess.Entities.ProvidedService>
+<div class="container">
+    <h2>Редагування послуг</h2>
+    <form asp-action="AddProvidedService" class="d-flex align-items-center">
+        <input type="text" class="form-control me-1" style="width: 150px" name="ServiceName" placeholder="Назва послуги" />
+        <input type="number" step="0.01" class="form-control me-1" style="width: 100px" name="Price" placeholder="Ціна (грн)" />
+        <button type="submit" class="btn btn-success">➕</button>
+    </form>
 
-<h2>Редагування послуг</h2>
-<form asp-action="AddProvidedService" class="d-flex align-items-center">
-    <input type="text" class="form-control me-1" style="width: 150px" name="ServiceName" placeholder="Назва послуги" />
-    <input type="number" step="0.01" class="form-control me-1" style="width: 100px" name="Price" placeholder="Ціна (грн)" />
-    <button type="submit" class="btn btn-success">➕</button>
-</form>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Назва послуги</th>
-            <th>Ціна (грн)</th>
-            <th colspan="2">Дії</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var service in Model)
-        {
+    <table class="table table-bordered">
+        <thead>
             <tr>
-                <form asp-action="UpdateProvidedService" asp-asp-controller="ProvidedServices">
-                    <input type="hidden" name="Id" value="@service.Id" />
-                    <td>
-                        <input type="text" class="form-control" name="ServiceName" value="@service.ServiceName" />
-                    </td>
-                    <td>
-                        <input type="number" step="1" class="form-control" name="Price" value="@service.Price" />
-                    </td>
-                    <td class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">💾 Зберегти</button>
-                    </td>
-                </form>
-                <td>
-                    <form asp-action="DeleteProvidedService" asp-controller="ProvidedServices" onsubmit="return confirm('Видалити цю послугу?');">
-                        <input type="hidden" name="id" value="@service.Id" />
-                        <button type="submit" class="btn btn-danger">🗑️ Видалити</button>
-                    </form>
-                </td>
+                <th>Назва послуги</th>
+                <th>Ціна (грн)</th>
+                <th colspan="2">Дії</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var service in Model)
+            {
+                <tr>
+                    <form asp-action="UpdateProvidedService" asp-controller="ProvidedServices">
+                        <input type="hidden" name="Id" value="@service.Id" />
+                        <td>
+                            <input type="text" class="form-control" name="ServiceName" value="@service.ServiceName" />
+                        </td>
+                        <td>
+                            <input type="number" step="1" class="form-control" name="Price" value="@service.Price" />
+                        </td>
+                        <td class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">💾 Зберегти</button>
+                        </td>
+                    </form>
+                    <td>
+                        <form asp-action="DeleteProvidedService" asp-controller="ProvidedServices" onsubmit="return confirm('Видалити цю послугу?');">
+                            <input type="hidden" name="id" value="@service.Id" />
+                            <button type="submit" class="btn btn-danger">🗑️ Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

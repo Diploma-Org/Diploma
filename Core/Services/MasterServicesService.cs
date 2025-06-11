@@ -94,4 +94,17 @@ public class MasterServicesService : IMasterServicesService
         _masterServicesRepository.Delete(masterService.Id);
         _masterServicesRepository.Save();
     }
+    public void DeleteAllMasterServices(int idMaster)
+    {
+        var masterServices = _masterServicesRepository.GetAll()
+            .Where(a => a.IdMaster == idMaster).ToList();
+        if (masterServices == null || !masterServices.Any())
+            throw new ArgumentNullException($"Master services with ID {idMaster} not found.");
+        
+        foreach (var masterService in masterServices)
+        {
+            _masterServicesRepository.Delete(masterService.Id);
+        }
+        _masterServicesRepository.Save();
+    }
 }

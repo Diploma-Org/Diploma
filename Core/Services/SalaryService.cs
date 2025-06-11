@@ -7,18 +7,15 @@ public class SalaryService : ISalaryService
 {
     private readonly IRepository<Master> _mastersRepository;
     private readonly IRepository<Salary> _salariesRepository;
-    private readonly IRepository<DailyWage> _dailyWagesRepository;
 
     public SalaryService(IRepository<Master> mastersRepository,
-                         IRepository<Salary> salariesRepository,
-                         IRepository<DailyWage> dailyWagesRepository)
+                         IRepository<Salary> salariesRepository)
     {
         _mastersRepository = mastersRepository;
         _salariesRepository = salariesRepository;
-        _dailyWagesRepository = dailyWagesRepository;
     }
 
-    public void AddSalary(int masterId, float earnings)
+    public void AddSalary(int masterId)
     {
         var master = _mastersRepository.GetById(masterId);
         if (master == null)
@@ -27,7 +24,7 @@ public class SalaryService : ISalaryService
         var salary = new Salary
         {
             IdMaster = masterId,
-            Earnings = earnings
+            Earnings = 0,
         };
 
         _salariesRepository.Insert(salary);
@@ -57,32 +54,7 @@ public class SalaryService : ISalaryService
             float mult = master.WagePercent / 100;
             salary.Earnings += providedService.Price * mult;
             _salariesRepository.Update(salary);
-            _salariesRepository.Save();
-
-            if (!_dailyWagesRepository.GetAll().Any(dw => dw.Date.Date == date.Date))
-            {
-                mult = (100 - master.WagePercent) / 100;
-                var dailyWage = new DailyWage
-                {
-                    Date = date,
-                    Wage = providedService.Price * mult
-                };
-                _dailyWagesRepository.Insert(dailyWage);
-                _dailyWagesRepository.Save();
-            }
-            else
-            {
-                mult = (100 - master.WagePercent) / 100;
-                var dailyWage = _dailyWagesRepository.GetAll()
-                    .FirstOrDefault(dw => dw.Date.Date == date.Date);
-                if (dailyWage != null)
-                {
-                    dailyWage.Wage += providedService.Price * mult;
-                    _dailyWagesRepository.Update(dailyWage);
-                    _dailyWagesRepository.Save();
-                }
-            }
-            
+            _salariesRepository.Save();            
         }
     }
     public void DecreaseWage(Master master, Salary salary, ProvidedService providedService, DateTime date)
@@ -95,29 +67,6 @@ public class SalaryService : ISalaryService
             salary.Earnings -= providedService.Price * mult;
             _salariesRepository.Update(salary);
             _salariesRepository.Save();
-            if (!_dailyWagesRepository.GetAll().Any(dw => dw.Date.Date == date.Date))
-            {
-                mult = (100 - master.WagePercent) / 100;
-                var dailyWage = new DailyWage
-                {
-                    Date = date,
-                    Wage = -providedService.Price * mult
-                };
-                _dailyWagesRepository.Insert(dailyWage);
-                _dailyWagesRepository.Save();
-            }
-            else
-            {
-                mult = (100 - master.WagePercent) / 100;
-                var dailyWage = _dailyWagesRepository.GetAll()
-                    .FirstOrDefault(dw => dw.Date.Date == date.Date);
-                if (dailyWage != null)
-                {
-                    dailyWage.Wage -= providedService.Price * mult;
-                    _dailyWagesRepository.Update(dailyWage);
-                    _dailyWagesRepository.Save();
-                }
-            }
         }
     }
     public void DecreaseWage(int masterId, float Withdrawal)
@@ -150,20 +99,5 @@ public class SalaryService : ISalaryService
         }
         return salaries;
     }
-    public DailyWage GetDailyWage(DateTime date)
-    {
-        var dailyWage = _dailyWagesRepository.GetAll()
-            .FirstOrDefault(dw => dw.Date.Date == date.Date);
-        if (dailyWage == null)
-        {
-            dailyWage = new DailyWage
-            {
-                Date = date,
-                Wage = 0
-            };
-            _dailyWagesRepository.Insert(dailyWage);
-            _dailyWagesRepository.Save();
-        }
-        return dailyWage;
-    }
+    
 }
