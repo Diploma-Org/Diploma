@@ -9,5 +9,4 @@ public interface ISalaryService
     void DecreaseWage(Master master, Salary salary, ProvidedService providedService, DateTime date);
     void DecreaseWage(int masterId, float Withdrawal);
     List<Salary> GetSalaries(List<Master> masters);
-    DailyWage GetDailyWage(DateTime date);
 }

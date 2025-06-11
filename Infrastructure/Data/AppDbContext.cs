@@ -14,7 +14,6 @@ public class AppDbContext : IdentityDbContext
     public DbSet<WorkingMaster> WorkingMasters { get; set; }
     public DbSet<MasterService> MasterServices { get; set; }
     public DbSet<Salary> Salaries { get; set; }
-    public DbSet<DailyWage> DailyWages { get; set; }
     public DbSet<Client> Clients { get; set; }
 
 
@@ -29,7 +28,6 @@ public class AppDbContext : IdentityDbContext
         builder.ApplyConfiguration(new WorkingMasterConfiguration());
         builder.ApplyConfiguration(new MasterServiceConfiguration());
         builder.ApplyConfiguration(new SalaryConfiguration());
-        builder.ApplyConfiguration(new DailyWageConfiguration());
         builder.ApplyConfiguration(new ClientConfiguration());
     }
 }
