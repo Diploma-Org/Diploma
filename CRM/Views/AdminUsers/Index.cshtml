@@ -1,0 +1,42 @@
+@model List<BusinessLogic.DTOs.UserDto>
+@{
+    ViewData["Title"] = "Адміни";
+}
+
+<link rel="stylesheet" href="~/css/AdminUsers.css" />
+
+<div class="admin-users-page">
+    <div class="au-container">
+        <h1 class="au-page-title">Адміни</h1>
+
+        <div class="au-user-cards">
+            @foreach (var user in Model)
+            {
+                <div class="au-user-card">
+                    <div class="au-user-info">
+                        <p><strong>Ім'я:</strong> @user.UserName</p>
+                        <p><strong>Email:</strong> @user.Email</p>
+                        <p><strong>Телефон:</strong> @user.PhoneNumber</p>
+                    </div>
+                    <div class="au-user-actions">                    
+                        <form asp-action="DeleteUser" asp-controller="AdminUsers" method="post" class="au-inline-form">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="au-btn au-delete-btn">Видалити</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="au-add-user-form">
+            <h2>Додати нового користувача</h2>
+            <form asp-action="CreateUser" asp-controller="AdminUsers" method="post" class="au-new-user-form">
+                <input type="text" name="UserName" placeholder="Ім'я" required />
+                <input type="email" name="Email" placeholder="Email" required />
+                <input type="password" name="Password" placeholder="Пароль" required />
+                <input type="tel" name="PhoneNumber" placeholder="Номер телефону" />
+                <button type="submit" class="au-btn au-add-btn">Додати</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,170 @@
+@using System.Globalization
+
+@model WebApp.ViewModels.MastersIndexViewModel
+@{
+    ViewData["Title"] = "Розклад";
+    var selectedDate = Model.SelectedDate;
+}
+<link rel="stylesheet" href="~/css/Calendar.css">
+<link rel="stylesheet" href="~/css/MastersIndex.css">
+<script src="~/js/Calendar.js"></script>
+<div class="masters-container gap-4 p-4">
+    <aside class="calendar-section border rounded shadow-sm p-3 bg-white" style="width: 250px;">
+        @{
+            var monthOffset = 0;
+            if (int.TryParse(Context.Request.Query["monthOffset"], out var offset))
+            {
+                monthOffset = offset;
+            }
+
+            var baseMonth = DateTime.Today.AddMonths(monthOffset);
+            var monthsToShow = new[]
+            {
+                baseMonth.AddMonths(-1),
+                baseMonth,
+                baseMonth.AddMonths(1)
+            };
+        }
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-outline-secondary btn-sm" style="border-color: transparent" id="prev-month">&laquo;</button>
+            <span class="fw-semibold">@baseMonth.ToString("yyyy")</span>
+            <button class="btn btn-outline-secondary btn-sm" style="border-color: transparent" id="next-month">&raquo;</button>
+        </div>
+
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["ErrorMessage"]
+            </div>
+        }
+
+        @foreach (var month in monthsToShow)
+        {
+            <div class="month-calendar mb-4">
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM", CultureInfo.CreateSpecificCulture("uk-UA"))</h5>
+
+                <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
+                    <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
+                    <div>Пт</div><div>Сб</div><div>Нд</div>
+                </div>
+
+                <div class="days-grid d-grid grid-template-columns-7 gap-1 text-center">
+                    @{
+                        var firstDay = new DateTime(month.Year, month.Month, 1);
+                        var startOffset = firstDay.DayOfWeek == DayOfWeek.Sunday ? 6 : (int)firstDay.DayOfWeek - 1;
+                        var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
+                    }
+
+                    @for (int i = 0; i < startOffset; i++)
+                    {
+                        <div class="empty-day"></div>
+                    }
+
+                    @for (int day = 1; day <= daysInMonth; day++)
+                    {
+                        var date = new DateTime(month.Year, month.Month, day);
+                        <div class="day btn btn-light @(date.Date == Model.SelectedDate ? "btn-primary" : "")"
+                             data-date="@date.ToString("yyyy-MM-dd")">
+                            @day
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </aside>
+   
+   <div class="masters-section container mt-4">
+        <div class="row">
+            @if(ViewData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewData["ErrorMessage"]
+                </div>
+            }
+        </div>
+        <div class="row">
+            <!-- Card 1: Управление мастерами -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Управління майстрами</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AddMaster" method="post" class="row g-2 mb-3">
+                            <div class="col-md-3">
+                                <input type="text" name="name" class="form-control" placeholder="Ім'я" required />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="surname" class="form-control" placeholder="Прізвище" required />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="tel" name="phone" class="form-control" placeholder="+38" required pattern="\+?[0-9\s\-]+" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" name="wagePercent" class="form-control" placeholder="Відсоток %"/>
+                            </div>
+                            <div class="col-12 d-flex justify-content-start">
+                                <button type="submit" class="btn btn-success">Додати</button>
+                            </div>
+                        </form>
+                        <ul class="list-group">
+                            @foreach (var master in Model.Masters)
+                            {
+                                <li class="list-group-item">
+                                    <form asp-action="UpdateMaster" method="post" class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                        <input type="hidden" name="Id" value="@master.Id" />
+                                        
+                                        <input type="text" name="Name" value="@master.Name" class="form-control form-control-sm" placeholder="Ім'я" required />
+                                        <input type="text" name="Surname" value="@master.Surname" class="form-control form-control-sm" placeholder="Прізвище" required />
+                                        <input type="tel" name="PhoneNumber" value="@master.PhoneNumber" class="form-control form-control-sm" placeholder="Телефон" required />
+                                        <input type="number" name="WagePercent" value="@master.WagePercent" class="form-control form-control-sm" placeholder="%" min="0" max="100" required />
+                                        <button type="submit" class="btn btn-sm btn-primary">Зберегти</button>
+                                        <a asp-action="DeleteMaster" asp-route-id="@master.Id" class="btn btn-sm btn-outline-danger">Видалити</a>
+                                    </form>
+                                    
+                                </li>
+
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Назначение на дату -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Майстри на @selectedDate.ToString("dd MMMM yyyy")</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AssignMasterToDate" method="post" class="d-flex mb-3 gap-2">
+                            <input type="hidden" name="date" value="@selectedDate.ToString("yyyy-MM-dd")" />
+                            <select name="masterId" class="form-select" required>
+                                <option value="" disabled selected>Обрати майстра</option>
+                                @foreach (var master in Model.Masters)
+                                {
+                                    <option value="@master.Id">@master.Name</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-success">Назначити</button>
+                        </form>
+                        
+
+                        <ul class="list-group">
+                            @foreach (var master in Model.WorkingMasters)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@Model.Masters.First(m => m.Id == master.IdMaster).Name</span>
+                                    <form asp-action="RemoveMasterFromDate" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@master.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Видалити</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

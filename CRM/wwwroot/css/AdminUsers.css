@@ -1,0 +1,103 @@
+.admin-users-page {
+    background: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+  }
+  
+  .admin-users-page .au-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .admin-users-page .au-page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+  }
+  
+  .admin-users-page .au-user-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .admin-users-page .au-user-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .admin-users-page .au-user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .admin-users-page .au-user-info p {
+    margin: 5px 0;
+  }
+  
+  .admin-users-page .au-user-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .admin-users-page .au-inline-form {
+    display: inline;
+  }
+  
+  .admin-users-page .au-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: white;
+  }
+  
+  .admin-users-page .au-delete-btn {
+    background-color: #dc3545;
+  }
+  
+  .admin-users-page .au-delete-btn:hover {
+    background-color: #a71d2a;
+  }
+  
+  .admin-users-page .au-add-user-form {
+    background-color: white;
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-users-page .au-new-user-form {
+    display: grid;
+    gap: 15px;
+  }
+  
+  .admin-users-page .au-new-user-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: border-color 0.2s;
+  }
+  
+  .admin-users-page .au-new-user-form input:focus {
+    border-color: #0d6efd;
+    outline: none;
+  }
+  
+  .admin-users-page .au-add-btn {
+    background-color: #198754;
+  }
+  
+  .admin-users-page .au-add-btn:hover {
+    background-color: #146c43;
+  }
+  

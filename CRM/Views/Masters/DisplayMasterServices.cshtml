@@ -1,0 +1,85 @@
+@model BusinessLogic.DTOs.MasterServicesAndMasterDto
+@{
+    ViewBag.Title = "Manage Master Services";
+    var masters = ViewBag.Masters as List<DataAccess.Entities.Master>;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Управління послугами майстрів</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Обрати майстра
+                </div>
+                <div class="card-body">
+                    <form asp-action="DisplayMasterServices" class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <select class="form-select" id="masterSelect" name="IdMaster"
+                                    asp-items="@(new SelectList(masters, nameof(DataAccess.Entities.Master.Id), nameof(DataAccess.Entities.Master.Name), Model.Master.Id))"
+                                    onchange="this.form.submit()">
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    Послуги: <strong>@Model.Master.Name</strong>
+                </div>
+                <div class="card-body">
+                    @if (Model.MasterServices.Any())
+                    {
+                        <div class="row">
+                            @foreach (var service in Model.MasterServices)
+                            {
+                                <div class="col-md-6">
+                                    <div class="card mb-3 shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@service.ServiceName</h5>
+                                            <p class="card-text">Ціна: $@service.Price</p>
+                                            <form method="post" asp-action="DeleteService">
+                                                <input type="hidden" name="IdMaster" value="@Model.Master.Id" />
+                                                <input type="hidden" name="IdService" value="@service.Id" />
+                                                <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Немає доданих послуг</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        Обрати послугу для <strong>@Model.Master.Name</strong>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form asp-action="AddMasterServiceFromList" asp-route-IdMaster="@Model.Master.Id">
+                            <div class="col-md-8">
+                                <select class="form-select" id="serviceSelect" name="IdService"
+                                        asp-items="@(new SelectList(Model.ProvidedServices, nameof(DataAccess.Entities.ProvidedService.Id), nameof(DataAccess.Entities.ProvidedService.ServiceName)))">
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary mt-3">Додати послугу</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
