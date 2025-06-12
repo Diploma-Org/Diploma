@@ -1,6 +1,8 @@
+@using System.Globalization
+
 @model WebApp.ViewModels.MastersIndexViewModel
 @{
-    ViewData["Title"] = "Расписание";
+    ViewData["Title"] = "Розклад";
     var selectedDate = Model.SelectedDate;
 }
 <link rel="stylesheet" href="~/css/Calendar.css">
@@ -39,7 +41,7 @@
         @foreach (var month in monthsToShow)
         {
             <div class="month-calendar mb-4">
-                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM")</h5>
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM", CultureInfo.CreateSpecificCulture("uk-UA"))</h5>
 
                 <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
@@ -85,24 +87,24 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Masters management</h5>
+                        <h5 class="mb-0">Управління майстрами</h5>
                     </div>
                     <div class="card-body">
                         <form asp-action="AddMaster" method="post" class="row g-2 mb-3">
                             <div class="col-md-3">
-                                <input type="text" name="name" class="form-control" placeholder="Name" required />
+                                <input type="text" name="name" class="form-control" placeholder="Ім'я" required />
                             </div>
                             <div class="col-md-3">
-                                <input type="text" name="surname" class="form-control" placeholder="Surname" required />
+                                <input type="text" name="surname" class="form-control" placeholder="Прізвище" required />
                             </div>
                             <div class="col-md-3">
                                 <input type="tel" name="phone" class="form-control" placeholder="+38" required pattern="\+?[0-9\s\-]+" />
                             </div>
                             <div class="col-md-3">
-                                <input type="number" name="wagePercent" class="form-control" placeholder="Wage %"/>
+                                <input type="number" name="wagePercent" class="form-control" placeholder="Відсоток %"/>
                             </div>
                             <div class="col-12 d-flex justify-content-start">
-                                <button type="submit" class="btn btn-success">Add</button>
+                                <button type="submit" class="btn btn-success">Додати</button>
                             </div>
                         </form>
                         <ul class="list-group">
@@ -117,7 +119,7 @@
                                         <input type="tel" name="PhoneNumber" value="@master.PhoneNumber" class="form-control form-control-sm" placeholder="Телефон" required />
                                         <input type="number" name="WagePercent" value="@master.WagePercent" class="form-control form-control-sm" placeholder="%" min="0" max="100" required />
                                         <button type="submit" class="btn btn-sm btn-primary">Зберегти</button>
-                                        <a asp-action="DeleteMaster" asp-route-id="@master.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                        <a asp-action="DeleteMaster" asp-route-id="@master.Id" class="btn btn-sm btn-outline-danger">Видалити</a>
                                     </form>
                                     
                                 </li>
@@ -132,19 +134,19 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Masters on @selectedDate.ToString("dd MMMM yyyy")</h5>
+                        <h5 class="mb-0">Майстри на @selectedDate.ToString("dd MMMM yyyy")</h5>
                     </div>
                     <div class="card-body">
                         <form asp-action="AssignMasterToDate" method="post" class="d-flex mb-3 gap-2">
                             <input type="hidden" name="date" value="@selectedDate.ToString("yyyy-MM-dd")" />
                             <select name="masterId" class="form-select" required>
-                                <option value="" disabled selected>Choose master</option>
+                                <option value="" disabled selected>Обрати майстра</option>
                                 @foreach (var master in Model.Masters)
                                 {
                                     <option value="@master.Id">@master.Name</option>
                                 }
                             </select>
-                            <button type="submit" class="btn btn-success">Assign</button>
+                            <button type="submit" class="btn btn-success">Назначити</button>
                         </form>
                         
 
@@ -155,7 +157,7 @@
                                     <span>@Model.Masters.First(m => m.Id == master.IdMaster).Name</span>
                                     <form asp-action="RemoveMasterFromDate" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@master.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Видалити</button>
                                     </form>
                                 </li>
                             }

@@ -1,3 +1,4 @@
+@using System.Globalization
 @model WebApp.ViewModels.HomeIndexViewModel
 
 @{
@@ -55,8 +56,7 @@
         @foreach (var month in monthsToShow)
         {
             <div class="month-calendar mb-4">
-                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM")</h5>
-
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM", CultureInfo.CreateSpecificCulture("uk-UA"))</h5>
                 <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>
                     <div>Пт</div><div>Сб</div><div>Нд</div>
@@ -99,7 +99,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th style="position: sticky; top: 0; left: 0; z-index: 20; background: #f8f9fa; height: 30px;">Time</th>
+                        <th style="position: sticky; top: 0; left: 0; z-index: 20; background: #f8f9fa; height: 30px;">Час</th>
                         @foreach (var master in Model.Masters)
                         {
                             <th style="position: sticky; top: 0; z-index: 15; background: #f8f9fa; max-width: 100px; overflow: hidden; text-overflow: ellipsis; height: 30px;" title="@master.Name">@master.Name</th>
@@ -140,13 +140,13 @@
                                             <div class="appointment-actions" style="margin-top: 5px;">
                                                 <button class="btn btn-sm btn-primary edit-appointment"
                                                         data-appointment='@Html.Raw(Json.Serialize(appointment))'>
-                                                    Edit
+                                                    Редагувати
                                                 </button>
                                                 <form asp-action="DeleteAppointment" style="display:inline;">
                                                     <input type="hidden" name="id" value="@appointment.Id" />
                                                     <input type="hidden" name="Date" value="@Model.SelectedDate" />
                                                     <button class="btn btn-sm btn-danger" type="submit" onclick="return confirm('Delete this appointment?')">
-                                                        Delete
+                                                        Видалити
                                                     </button>
                                                 </form>
                                             </div>

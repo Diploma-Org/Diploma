@@ -2,9 +2,10 @@ using DataAccess.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Configurations;
+using Microsoft.AspNetCore.Identity;
 namespace DataAccess.Data;
 
-public class AppDbContext : IdentityDbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) 
         : base(options) { }
@@ -24,7 +25,6 @@ public class AppDbContext : IdentityDbContext
         builder.ApplyConfiguration(new MasterConfiguration());
         builder.ApplyConfiguration(new AppointmentConfiguration());
         builder.ApplyConfiguration(new ProvidedServiceConfiguration());
-        builder.ApplyConfiguration(new AdminConfiguration());
         builder.ApplyConfiguration(new WorkingMasterConfiguration());
         builder.ApplyConfiguration(new MasterServiceConfiguration());
         builder.ApplyConfiguration(new SalaryConfiguration());
