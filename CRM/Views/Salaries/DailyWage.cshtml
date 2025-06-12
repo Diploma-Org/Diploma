@@ -1,3 +1,4 @@
+@using System.Globalization
 @model WebApp.ViewModels.DailyWageViewModel
 
 <link rel="stylesheet" href="~/css/Calendar.css" />
@@ -38,7 +39,7 @@
         @foreach (var month in monthsToShow)
         {
             <div class="month-calendar mb-4">
-                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM")</h5>
+                <h5 class="text-center mb-2 fw-semibold border-bottom pb-1">@month.ToString("MMMM", CultureInfo.CreateSpecificCulture("uk-UA"))</h5>
 
                 <div class="weekdays-header d-grid grid-template-columns-7 text-center small text-muted mb-1">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div>

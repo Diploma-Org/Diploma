@@ -53,7 +53,7 @@ public class AppointmentService : IAppointmentService
                 throw new ArgumentNullException($"Salary for master with ID {Appointment.IdMaster} not found.");
             else
             {
-                _salaryService.IncreaseWage(master, salary, providedService, appointment.Date);
+                _salaryService.IncreaseWage(master, salary, providedService);
             }
         }
     }
@@ -86,7 +86,7 @@ public class AppointmentService : IAppointmentService
             else
             {
                 if (Appointment.IsPaid)
-                    _salaryService.IncreaseWage(master, salary, providedService, appointment.Date);
+                    _salaryService.IncreaseWage(master, salary, providedService);
                 else
                     _salaryService.DecreaseWage(master, salary, providedService, appointment.Date);
             }

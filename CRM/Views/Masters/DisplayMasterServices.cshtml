@@ -5,13 +5,13 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Master Services Management</h2>
+    <h2 class="mb-4">Управління послугами майстрів</h2>
 
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header">
-                    Select Master
+                    Обрати майстра
                 </div>
                 <div class="card-body">
                     <form asp-action="DisplayMasterServices" class="row g-3 align-items-center">
@@ -27,7 +27,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    Services for <strong>@Model.Master.Name</strong>
+                    Послуги: <strong>@Model.Master.Name</strong>
                 </div>
                 <div class="card-body">
                     @if (Model.MasterServices.Any())
@@ -39,11 +39,11 @@
                                     <div class="card mb-3 shadow-sm">
                                         <div class="card-body">
                                             <h5 class="card-title">@service.ServiceName</h5>
-                                            <p class="card-text">Price: $@service.Price</p>
+                                            <p class="card-text">Ціна: $@service.Price</p>
                                             <form method="post" asp-action="DeleteService">
                                                 <input type="hidden" name="IdMaster" value="@Model.Master.Id" />
                                                 <input type="hidden" name="IdService" value="@service.Id" />
-                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
                                             </form>
                                         </div>
                                     </div>
@@ -53,7 +53,7 @@
                     }
                     else
                     {
-                        <p>No services found for this master.</p>
+                        <p>Немає доданих послуг</p>
                     }
                 </div>
             </div>
@@ -64,7 +64,7 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        Choose Service for <strong>@Model.Master.Name</strong>
+                        Обрати послугу для <strong>@Model.Master.Name</strong>
                     </div>
                     
                     <div class="card-body">
@@ -75,7 +75,7 @@
                                 </select>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary mt-3">Add Service</button>
+                            <button type="submit" class="btn btn-primary mt-3">Додати послугу</button>
                         </form>
                     </div>
                 </div>

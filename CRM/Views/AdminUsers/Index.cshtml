@@ -1,0 +1,42 @@
+@model List<BusinessLogic.DTOs.UserDto>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<link rel="stylesheet" href="~/css/AdminUsers.css" />
+
+<div class="container">
+    <h1 class="page-title">Адміни</h1>
+
+    <div class="user-cards">
+        @foreach (var user in Model)
+        {
+            <div class="user-card">
+                <div class="user-info">
+                    <p><strong>Ім'я:</strong> @user.UserName</p>
+                    <p><strong>Email:</strong> @user.Email</p>
+                    <p><strong>Телефон:</strong> @user.PhoneNumber</p>
+                </div>
+
+                <div class="user-actions">                    
+                    <form method="post" asp-action="DeleteUser" asp-controller="AdminUsers" class="inline-form">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn delete-btn">Видалити</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="add-user-form">
+        <h2>Додати нового користувача</h2>
+        <form asp-action="CreateUser" asp-controller="AdminUsers" method="post" class="new-user-form">
+            <input type="text" name="UserName" placeholder="Ім'я" required />
+            <input type="email" name="Email" placeholder="Email" required />
+            <input type="password" name="Password" placeholder="Пароль" required />
+            <input type="tel" name="PhoneNumber" placeholder="Номер телефону" />
+
+            <button type="submit" class="btn add-btn">Додати</button>
+        </form>
+    </div>
+</div>

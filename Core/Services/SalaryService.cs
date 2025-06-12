@@ -45,7 +45,7 @@ public class SalaryService : ISalaryService
         _salariesRepository.Save();
     }
 
-    public void IncreaseWage(Master master, Salary salary, ProvidedService providedService, DateTime date)
+    public void IncreaseWage(Master master, Salary salary, ProvidedService providedService)
     {
         if (salary == null || providedService == null || master == null)
             throw new InvalidDataException("Problen during IncreasingWage.");

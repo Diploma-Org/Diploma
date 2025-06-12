@@ -9,19 +9,16 @@ public class MastersService : IMastersService
 {
     private readonly IRepository<WorkingMaster> _workingMastersRepository;
     private readonly IRepository<Master> _mastersRepository;
-    private readonly IRepository<Salary> _salariesRepository;
     private readonly ISalaryService _salaryService;
     private readonly IMasterServicesService _masterServicesService;
 
     public MastersService(IRepository<WorkingMaster> workingMastersRepository,
         IRepository<Master> mastersRepository,
-        IRepository<Salary> salariesRepository,
         ISalaryService salaryService,
         IMasterServicesService masterServicesService)
     {
         _mastersRepository = mastersRepository;
         _workingMastersRepository = workingMastersRepository;
-        _salariesRepository = salariesRepository;
         _salaryService = salaryService;
         _masterServicesService = masterServicesService;
     }
