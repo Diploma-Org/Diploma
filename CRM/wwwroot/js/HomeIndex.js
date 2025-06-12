@@ -91,57 +91,57 @@ document.addEventListener('DOMContentLoaded', function() {
         const servicesOptions = mastersServices.map(ms => {
             const service = services.find(s => s.id == ms.idProvidedService);
                 return service
-                    ? `<option value="${ms.idProvidedService}" ${ms.idProvidedService == selectedServiceId ? 'selected' : ''}>${service.serviceName}</option>`
+                    ? `<option value="${ms.idProvidedService}" ${ms.idProvidedService == selectedServiceId ? 'selected' : ''}>${service.serviceName} ${service.price} грн</option>`
                     : '';
             }).join('');
         
         const actionUrl = appointmentData ? `/Home/EditAppointment` : `/Home/BookAnAppointment`;
     
         bookingForm.innerHTML = `
-            <h4>${appointmentData ? "Edit" : "Booking"} Form</h4>
-            <p>Chosen time: ${times.startTime} - ${times.endTime}</p>
+            <h4>${appointmentData ? "Редагування" : "Бронювання"}</h4>
+            <p>Обраний час: ${times.startTime} - ${times.endTime}</p>
 
             <form id="appointmentForm" method="post" action="${actionUrl}">
                 <input type="hidden" name="date" value="${selectedDate}">
-                <input type="hidden" name="StartTime" value="${times.startTime}">
+                <input type="hidden" name="StartTime" value="${times.startTime}"> 
                 <input type="hidden" name="EndTime" value="${times.endTime}">
                 ${appointmentData ? `<input type="hidden" name="Id" value="${appointmentData.id}">` : ''}
 
                 <div class="form-group">
-                    <label>Master: ${masters.find(master => master.id == selectedMasterId)?.name}</label>
+                    <label>Майстер: ${masters.find(master => master.id == selectedMasterId)?.name}</label>
                     <input type="hidden" name="MasterId" value="${selectedMasterId}">
                 </div>
 
                 <div class="form-group">
-                    <label>Service:</label>
+                    <label>Послуга:</label>
                     <select name="ServiceId" required>${servicesOptions}</select>
                 </div>
 
                 <div class="form-group position-relative">
-                    <label>Find client (name, surname, or phone):</label>
-                    <input type="text" id="clientSearch" class="form-control" placeholder="Search clients...">
+                    <label>Знайти клієнта (ім'я, прізвище, or телефон):</label>
+                    <input type="text" id="clientSearch" class="form-control" placeholder="шукати клієнтів...">
                     <div id="clientSuggestions" class="list-group position-absolute w-100 z-3"></div>
                 </div>
 
                 <div class="form-group">
-                    <label>Client name:</label>
+                    <label>Ім'я клієнта:</label>
                     <input type="text" id="clientName" name="clientName" class="form-control" required value="${clientName}">
                 </div>
 
                 <div class="form-group">
-                    <label>Phone number:</label>
+                    <label>Номер телефону:</label>
                     <input type="tel" id="clientPhone" name="clientPhone" class="form-control" required value="${clientPhone}">
                 </div>
 
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" name="IsPaid" value="true" ${appointmentData?.isPaid ? 'checked' : ''}>
                     <input type="hidden" name="IsPaidCopy" value="${appointmentData?.isPaid ? 'true' : 'false'}">
-                    <label class="form-check-label">Paid</label>
+                    <label class="form-check-label">Оплачено</label>
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">${appointmentData ? "Save Changes" : "Book"}</button>
+                    <button type="button" id="cancelBookingBtn" class="btn btn-secondary">Відмінити</button>
+                    <button type="submit" class="btn btn-primary">${appointmentData ? "Зберегти зміни" : "Забронювати"}</button>
                 </div>
             </form>
         `;
